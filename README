@@ -109,7 +109,7 @@ BUILD PROCEDURE:
 	login as root user:
 		install -vdm 755 /mnt/lfs/usr/src
 		cd /mnt/lfs/usr/src
-		git clone <repository>
+		git clone https://github.com/Scott-Andrews-Github/LFS.git
 		#	toolchain build
 		cd /mnt/lfs/usr/src/LFS
 		make -f Makefile.lfs setup
