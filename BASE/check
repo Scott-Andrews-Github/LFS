@@ -14,7 +14,7 @@ Prep="%setup -q -n %{name}-%{version}"
 Build='./configure --prefix=/usr
 %{make_build}'
 
-Install="%{make_install} docdir=%{buildroot}/usr/share/doc/check-0.12.0
+Install="%{make_install} docdir=/usr/share/doc/check-0.12.0
 sed -i '1 s/tools/usr/' %{buildroot}/usr/bin/checkmk"
 
 Files='%defattr(-,root,root)'
