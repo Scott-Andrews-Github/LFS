@@ -48,8 +48,8 @@ Install='%{make_install}
 		%%_build_id_links		none
 		%%_smp_mflags		 -j4
 		#	Raspberry Pi 2 v1.1 platform
-		%%_optflags -O2 -march=armv7-a+fp -mtune=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4 -pipe -fPIC -fomit-frame-pointer
-		%%_system_type --with-arch=armv7-a+fp --with-fpu=neon-vfpv4 --with-float=hard --with-arch-directory=arm
+		%%_optflags -O2 -march=armv7-a -mtune=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4 -pipe -fPIC -fomit-frame-pointer -ftree-vectorize
+		%%_system_type --with-arch=armv7-a --with-fpu=neon-vfpv4 --with-float=hard --with-arch-directory=arm
 	EOF'
 
 Files='%defattr(-,lfs,lfs)'
