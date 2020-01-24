@@ -34,7 +34,7 @@ Install="%{make_install}
 install -vdm 755 %{buildroot}/etc/rpm
 cat > %{buildroot}/etc/rpm/macros <<- EOF
 	#	rpm parms
-	%%_topdir /usr/src/LFS-RPi
+	%%_topdir /usr/src/LFS
 	%%_dbpath /var/lib/rpm
 	%%_arch %%{_host_cpu}
 	%%_tmppath /usr/src/LFS/TMP
