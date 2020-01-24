@@ -1,0 +1,14 @@
+log=${LOGS}/${i}
+_msg_line "Testing gcc:"
+if [ -e "${log}" ]; then
+	_msg "Skipping"
+else
+	> ${log}
+	echo 'int main(){}' > dummy.c
+	cc dummy.c >> ${log} 2>&1
+	_msg 'Test:  [Requesting program interpreter: /tools/lib/ld-linux-armhf.so.3]' >> ${log} 2>&1
+	readelf -l a.out | grep ': /tools' >> ${log} 2>&1
+	rm dummy.c a.out
+	_msg_success
+fi
+touch "${log}"

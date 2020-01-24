@@ -1,0 +1,39 @@
+Summary='The GCC package contains the GNU compiler collection'
+Name='gcc'
+Version='9.2.0'
+Release='1'
+License='GPLv2'
+Url='https://gcc.gnu.org'
+Group='LFS/Base'
+Source='http://ftp.gnu.org/gnu/gcc/gcc-9.2.0/gcc-9.2.0.tar.xz'
+Patch=""
+Description='The GCC package contains the GNU compiler collection, which includes the C and C++ compilers.'
+
+Prep="%setup -q -n %{name}-%{version}
+mkdir build"
+
+Build='cd build
+SED=sed \
+../configure --prefix=/usr \
+	--enable-languages=c,c++ \
+	--disable-multilib \
+	--disable-bootstrap \
+	--with-system-zlib \
+	%{_system_type}
+%{make_build}'
+
+Install="cd build
+%{make_install}
+rm -rf %{buildroot}/usr/lib/gcc/\$(gcc -dumpmachine)/9.2.0/include-fixed/bits/
+install -vdm 755 %{buildroot}/lib
+ln -sv ../usr/bin/cpp %{buildroot}/lib
+install -vdm 755 %{buildroot}/usr/bin
+ln -sv gcc %{buildroot}/usr/bin/cc
+install -vdm 755 %{buildroot}/usr/lib/bfd-plugins
+ln -sfv ../../libexec/gcc/\$(gcc -dumpmachine)/%{version}/liblto_plugin.so %{buildroot}/usr/lib/bfd-plugins/
+
+install -vdm 755 %{buildroot}/usr/share/gdb/auto-load/usr/lib
+mv -v %{buildroot}/usr/lib/*gdb.py %{buildroot}/usr/share/gdb/auto-load/usr/lib"
+
+Files='%defattr(-,root,root)'
+Post=''

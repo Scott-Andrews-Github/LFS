@@ -1,0 +1,22 @@
+Summary='The Intltool is an internationalization tool used for extracting translatable strings from source files.'
+Name='intltool'
+Version='0.51.0'
+Release='1'
+License='GPLv2'
+Url='https://freedesktop.org/wiki/Software/intltool'
+Group='LFS/Base'
+Source='https://launchpad.net/intltool/trunk/0.51.0/+download/intltool-0.51.0.tar.gz'
+Patch=""
+Description='The Intltool is an internationalization tool used for extracting translatable strings from source files.'
+
+Prep="%setup -q -n %{name}-%{version}
+sed -i 's:\\\${:\\\$\\{:' intltool-update.in"
+
+Build='./configure --prefix=/usr
+%{make_build}'
+
+Install='%{make_install}
+install -vDm 644 doc/I18N-HOWTO %{buildroot}/usr/share/doc/%{name}-%{version}/I18N-HOWTO'
+
+Files='%defattr(-,root,root)'
+Post=''

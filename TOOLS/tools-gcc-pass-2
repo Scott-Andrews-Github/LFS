@@ -1,0 +1,58 @@
+Summary='The GCC package contains the GNU compiler collection'
+Name='tools-gcc-pass-2'
+Version='9.2.0'
+Release='1'
+License='GPLv2'
+Url='https://gcc.gnu.org'
+Group='LFS/Tools'
+Source='http://ftp.gnu.org/gnu/gcc/gcc-9.2.0/gcc-9.2.0.tar.xz http://www.mpfr.org/mpfr-4.0.2/mpfr-4.0.2.tar.xz http://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.xz https://ftp.gnu.org/gnu/mpc/mpc-1.1.0.tar.gz'
+Patch=""
+Description='The Binutils package contains a linker, an assembler, and other tools for handling object files.'
+
+Prep='%setup -q -n gcc-%{version}
+%setup -q -T -D -a 1  -n gcc-%{version}
+%setup -q -T -D -a 2  -n gcc-%{version}
+%setup -q -T -D -a 3  -n gcc-%{version}
+mv -v mpfr-4.0.2 mpfr
+mv -v gmp-6.1.2 gmp
+mv -v mpc-1.1.0 mpc
+cat gcc/limitx.h gcc/glimits.h gcc/limity.h > `dirname $(%{LFS_TGT}-gcc -print-libgcc-file-name)`/include-fixed/limits.h
+for file in gcc/config/arm/linux-eabi.h; do
+	cp -uv $file{,.orig}
+'
+Prep+="sed -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' -e 's@/usr@/tools@g' \$file.orig > \$file"
+Prep+='
+	cat >> $file <<- EOF
+		#undef STANDARD_STARTFILE_PREFIX_1
+		#undef STANDARD_STARTFILE_PREFIX_2
+		#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
+		#define STANDARD_STARTFILE_PREFIX_2 ""
+	EOF
+	touch $file.orig
+done
+mkdir build'
+
+Build='cd build
+CC=%{LFS_TGT}-gcc \
+CXX=%{LFS_TGT}-g++ \
+AR=%{LFS_TGT}-ar \
+RANLIB=%{LFS_TGT}-ranlib \
+../configure \
+	--prefix=/tools \
+	--with-local-prefix=/tools \
+	--with-native-system-header-dir=/tools/include \
+	--enable-languages=c,c++ \
+	--disable-libstdcxx-pch \
+	--disable-multilib \
+	--disable-bootstrap \
+	--disable-libgomp \
+	%{_system_type}
+%{make_build}'
+
+Install='rm -rf %{buildroot}
+cd build
+%{make_install}
+ln -sv gcc %{buildroot}/tools/bin/cc
+rm -rf %{buildroot}/tools/share/{doc,info,man}'
+
+Files='%defattr(-,lfs,lfs)'

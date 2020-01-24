@@ -1,0 +1,10 @@
+[ -v LC_ALL ] ||  _die  "LC_ALL environment variable missing/not set"
+[ "POSIX" = ${LC_ALL} ] || _die "LC_ALL environment variable incorrect: ${LC_ALL}"
+[ "/tools/bin:/bin:/usr/bin" = "${PATH}" ] || _die "PATH environment variable missing/not corrrect"
+[ "$(rpm --eval %{_prefix})" = "/tools" ] || _die "{_prefix} incorrect"
+case $(rpm --eval %{_arch}) in
+	armv6l)		;;
+	armv7l)		;;
+	armv7hnl)	;;
+	*)	_die "arch not set correctly"
+esac

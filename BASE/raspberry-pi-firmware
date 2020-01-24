@@ -1,0 +1,37 @@
+Summary='Broadcomm libaries,firmware and linux kernel'
+Name='raspberry-pi-firmware'
+Version='2019.11.13'
+Release='1'
+License='Varies'
+Url='None'
+Group='LFS/Base'
+Source='https://github.com/raspberrypi/firmware/archive/master.tar.gz'
+Patch=""
+Description='Broadcomm libaries,firmware and linux kernel'
+
+Prep="
+%define	DIRECTORY_NAME firmware-master
+%setup -q -n %{DIRECTORY_NAME}"
+
+Build=""
+
+Install="%define	DIRECTORY_NAME firmware-master
+#	install broadcomm firmware/boot loader
+install -vdm 755 %{buildroot}/boot
+rm %{_builddir}/%{DIRECTORY_NAME}/boot/*.dtb
+rm %{_builddir}/%{DIRECTORY_NAME}/boot/*.img
+rm -rf %{_builddir}/%{DIRECTORY_NAME}/boot/overlays
+cp -var %{_builddir}/%{DIRECTORY_NAME}/boot/* %{buildroot}/boot
+install -vdm 755 %{buildroot}/opt/softfp
+install -vdm 755 %{buildroot}/opt/hardfp
+#	userspace VideoCoreIV libraries built for the armv6 softfp ABI
+cp -var %{_builddir}/%{DIRECTORY_NAME}/opt/vc/* %{buildroot}/opt/softfp
+#	userspace VideoCoreIV libraries built for the armv6 hardfp ABI
+cp -var %{_builddir}/%{DIRECTORY_NAME}/hardfp/opt/vc/* %{buildroot}/opt/hardfp
+ln -vs hardfp %{buildroot}/opt/vc
+#	fix up ld search path
+install -vdm 755 %{buildroot}%{_sysconfdir}/ld.so.conf.d
+echo "/opt/vc/lib" >> %{buildroot}%{_sysconfdir}/ld.so.conf.d/broadcom.conf"
+
+Files='%defattr(-,root,root)'
+Post=''

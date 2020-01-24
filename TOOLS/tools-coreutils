@@ -1,0 +1,20 @@
+Summary='The Coreutils package contains utilities for showing and setting the basic system characteristics'
+Name='tools-coreutils'
+Version='8.31'
+Release='1'
+License='GPLv3'
+Url='http://www.gnu.org/software/coreutils'
+Group='LFS/Tools'
+Source='http://ftp.gnu.org/gnu/coreutils/coreutils-8.31.tar.xz'
+Patch=""
+Description='The Coreutils package contains utilities for showing and setting the basic system characteristics'
+
+Prep='%setup -q -n coreutils-%{version}'
+
+Build='./configure --prefix=/tools --enable-install-program=hostname
+%{make_build}'
+
+Install='%{make_install}
+rm -rf %{buildroot}/tools/share/{doc,info,man}'
+
+Files='%defattr(-,lfs,lfs)'

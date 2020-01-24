@@ -1,0 +1,26 @@
+Summary='The Bash package contains the Bourne-Again SHell.'
+Name='bash'
+Version='5.0'
+Release='1'
+License='GPLv3'
+Url='http://www.gnu.org/software/bash/'
+Group='LFS/Base'
+Source='http://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz'
+Patch=""
+Description='The Bash package contains the Bourne-Again SHell.'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='./configure --prefix=/usr \
+	--docdir=/usr/share/doc/%{name}-%{version} \
+	--without-bash-malloc \
+	--with-installed-readline
+%{make_build}'
+
+Install='%{make_install}
+install -vdm 755 %{buildroot}/bin
+mv -vf %{buildroot}/usr/bin/bash %{buildroot}/bin
+ln -vs bash %{buildroot}/bin/sh'
+
+Files='%defattr(-,root,root)'
+Post=''

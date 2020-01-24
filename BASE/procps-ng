@@ -1,0 +1,28 @@
+Summary='The Procps-ng package contains programs for monitoring processes.'
+Name='procps-ng'
+Version='3.3.15'
+Release='1'
+License='GPLv2'
+Url='https://sourceforge.net/projects/procps-ng'
+Group='LFS/Base'
+Source='https://sourceforge.net/projects/procps-ng/files/Production/procps-ng-3.3.15.tar.xz'
+Patch=""
+Description='The Procps-ng package contains programs for monitoring processes.'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='./configure --prefix=/usr \
+	--exec-prefix= \
+	--libdir=/usr/lib \
+	--docdir=/usr/share/doc/%{name}-%{version} \
+	--disable-static \
+	--disable-kill
+%{make_build}'
+
+Install="%{make_install}
+install -vdm 755 %{buildroot}/lib
+mv -v %{buildroot}/usr/lib/libprocps.so.* %{buildroot}/lib
+ln -sfv ../../lib/\$(readlink %{buildroot}/usr/lib/libprocps.so) %{buildroot}/usr/lib/libprocps.so"
+
+Files='%defattr(-,root,root)'
+Post=''

@@ -1,0 +1,20 @@
+Summary='The Grep package contains programs for searching through files.'
+Name='grep'
+Version='3.3'
+Release='1'
+License='GPLv3'
+Url='http://www.gnu.org/software/grep'
+Group='LFS/Base'
+Source='http://ftp.gnu.org/gnu/grep/grep-3.3.tar.xz'
+Patch=""
+Description='The Grep package contains programs for searching through files.'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='./configure --prefix=/usr --bindir=/bin
+%{make_build}'
+
+Install='%{make_install}'
+
+Files='%defattr(-,root,root)'
+Post=''

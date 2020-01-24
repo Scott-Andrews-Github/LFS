@@ -1,0 +1,22 @@
+Summary='The M4 package contains a macro processor'
+Name='tools-m4'
+Version='1.4.18'
+Release='1'
+License='GPLv3'
+Url='http://www.gnu.org/software/m4'
+Group='LFS/Tools'
+Source='http://ftp.gnu.org/gnu/m4/m4-1.4.18.tar.xz'
+Patch=""
+Description='The M4 package contains a macro processor'
+
+Prep="%setup -q -n m4-%{version}
+sed -i 's/IO_ftrylockfile/IO_EOF_SEEN/' lib/*.c
+echo '#define _IO_IN_BACKUP 0x100' >> lib/stdio-impl.h"
+
+Build='./configure --prefix=/tools
+%{make_build}'
+
+Install='%{make_install}
+rm -rf %{buildroot}/tools/share/{doc,info,man}'
+
+Files='%defattr(-,lfs,lfs)'

@@ -1,0 +1,33 @@
+Summary='The Eudev package contains programs for dynamic creation of device nodes.'
+Name='eudev'
+Version='3.2.8'
+Release='1'
+License='GPLv2'
+Url='Any'
+Group='LFS/Base'
+Source='https://dev.gentoo.org/~blueness/eudev/eudev-3.2.8.tar.gz http://anduin.linuxfromscratch.org/LFS/udev-lfs-20171102.tar.xz'
+Patch=""
+Description='The Eudev package contains programs for dynamic creation of device nodes.'
+
+Prep="%setup -q -n %{name}-%{version}
+%setup -q -T -D -a 1"
+
+Build='./configure --prefix=/usr \
+	--bindir=/sbin \
+	--sbindir=/sbin \
+	--libdir=/usr/lib \
+	--sysconfdir=/etc \
+	--libexecdir=/lib \
+	--with-rootprefix= \
+	--with-rootlibdir=/lib \
+	--enable-manpages \
+	--disable-static
+%{make_build}'
+
+Install="install -vdm 755 %{buildroot}/lib/udev/rules.d
+install -vdm 755  %{buildroot}/etc/udev/rules.d
+%{make_install}
+make -f udev-lfs-20171102/Makefile.lfs DESTDIR=%{buildroot} install"
+
+Files='%defattr(-,root,root)'
+Post=''

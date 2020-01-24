@@ -1,0 +1,21 @@
+Summary='The Make package contains a program for compiling packages.'
+Name='make'
+Version='4.2.1'
+Release='1'
+License='GPLv3'
+Url='http://www.gnu.org/software/make'
+Group='LFS/Base'
+Source='http://ftp.gnu.org/gnu/make/make-4.2.1.tar.gz'
+Patch=""
+Description='The Make package contains a program for compiling packages.'
+
+Prep="%setup -q -n %{name}-%{version}
+sed -i '211,217 d; 219,229 d; 232 d' glob/glob.c"
+
+Build='./configure --prefix=/usr
+%{make_build}'
+
+Install="%{make_install}"
+
+Files='%defattr(-,root,root)'
+Post=''

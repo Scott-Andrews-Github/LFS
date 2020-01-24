@@ -1,0 +1,25 @@
+Summary='The GDBM package contains the GNU Database Manager'
+Name='gdbm'
+Version='1.18.1'
+Release='1'
+License='GPLv3'
+Url='http://www.gnu.org/software/gdbm'
+Group='LFS/Base'
+Source='http://ftp.gnu.org/gnu/gdbm/gdbm-1.18.1.tar.gz'
+Patch=""
+Description='The GDBM package contains the GNU Database Manager. It is a library of database
+functions that use extensible hashing and work similar to the standard UNIX dbm.
+The library provides primitives for storing key/data pairs, searching and
+retrieving the data by its key and deleting a key along with its data.'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='./configure --prefix=/usr \
+	--disable-static \
+	--enable-libgdbm-compat
+%{make_build}'
+
+Install='%{make_install}'
+
+Files='%defattr(-,root,root)'
+Post=''

@@ -1,0 +1,43 @@
+Summary='The Ncurses package contains libraries for terminal-independent handling of character screens'
+Name='ncurses'
+Version='6.1'
+Release='1'
+License='GPL'
+Url='http://www.gnu.org/software/ncurses'
+Group='LFS/Base'
+Source='http://ftp.gnu.org/gnu/ncurses/ncurses-6.1.tar.gz'
+Patch=""
+Description='The Ncurses package contains libraries for terminal-independent handling of character screens'
+
+Prep="%setup -q -n %{name}-%{version}
+sed -i '/LIBTOOL_INSTALL/d' c++/Makefile.in"
+
+Build='./configure  \
+	--prefix=/usr \
+	--mandir=/usr/share/man \
+	--with-shared \
+	--without-debug \
+	--without-normal \
+	--enable-pc-files \
+	--enable-widec
+%{make_build}'
+
+Install='%{make_install}
+install -vdm 755 %{buildroot}/lib
+mv -v %{buildroot}/usr/lib/libncursesw.so.6* %{buildroot}/lib
+ln -sfv ../../lib/$(readlink %{buildroot}/usr/lib/libncursesw.so) %{buildroot}/usr/lib/libncursesw.so
+for lib in ncurses form panel menu ; do
+	rm -vf %{buildroot}/usr/lib/lib${lib}.so
+	echo "INPUT(-l${lib}w)" > %{buildroot}/usr/lib/lib${lib}.so
+	ln -sfv ${lib}w.pc %{buildroot}/usr/lib/pkgconfig/${lib}.pc
+done
+rm -vf %{buildroot}/usr/lib/libcursesw.so
+echo "INPUT(-lncursesw)" > %{buildroot}/usr/lib/libcursesw.so
+ln -sfv libncurses.so %{buildroot}/usr/lib/libcurses.so
+install -vdm 755 %{buildroot}/usr/share/doc/%{name}-%{version}
+cp -v -R doc/* %{buildroot}/usr/share/doc/%{name}-%{version}
+'
+Files='%defattr(-,root,root)
+'
+Post='
+'

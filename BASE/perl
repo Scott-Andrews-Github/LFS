@@ -1,0 +1,29 @@
+Summary='The Perl package contains the Practical Extraction and Report Language.'
+Name='perl'
+Version='5.30.0'
+Release='1'
+License='GPLv1'
+Url='https://www.perl.org'
+Group='LFS/Base'
+Source='https://www.cpan.org/src/5.0/perl-5.30.0.tar.xz'
+Patch=""
+Description='The Perl package contains the Practical Extraction and Report Language.'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='export BUILD_ZLIB=False
+export BUILD_BZIP2=0
+sh Configure -des -Dprefix=/usr \
+	-Dvendorprefix=/usr \
+	-Dman1dir=/usr/share/man/man1 \
+	-Dman3dir=/usr/share/man/man3 \
+	-Dpager="/usr/bin/less -isR" \
+	-Duseshrplib \
+	-Dusethreads \
+	-Doptimize="${CFLAGS}" 
+%{make_build}'
+
+Install='%{make_install}'
+
+Files='%defattr(-,root,root)'
+Post=''

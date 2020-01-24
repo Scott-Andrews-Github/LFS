@@ -1,0 +1,20 @@
+Summary='The Diffutils package contains programs that show the differences between files or directories.'
+Name='diffutils'
+Version='3.7'
+Release='1'
+License='GPLv3'
+Url='http://www.gnu.org/software/diffutils'
+Group='LFS/Base'
+Source='http://ftp.gnu.org/gnu/diffutils/diffutils-3.7.tar.xz'
+Patch=""
+Description='The Diffutils package contains programs that show the differences between files or directories.'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='./configure --prefix=/usr
+%{make_build}'
+
+Install="%{make_install}"
+
+Files='%defattr(-,root,root)'
+Post=''

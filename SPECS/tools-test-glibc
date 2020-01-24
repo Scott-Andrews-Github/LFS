@@ -1,0 +1,15 @@
+log=${LOGS}/${i}
+_msg_line "Testing glibc: "
+if [ -e "${log}" ]; then
+	_msg  "Skipping"
+else
+	> ${log}
+	LFS_TGT=$(rpm --eval %LFS_TGT)
+	echo 'int main(){}' > dummy.c
+	${LFS_TGT}-gcc dummy.c >> ${log} 2>&1
+	_msg 'Test: [Requesting program interpreter: /tools/lib/ld-linux-armhf.so.3]' >> ${log} 2>&1
+	readelf -l a.out | grep ': /tools' >> ${log} 2>&1
+	rm dummy.c a.out
+	_msg_success
+fi
+touch "${log}"

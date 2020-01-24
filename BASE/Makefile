@@ -1,0 +1,173 @@
+VPATH = ../SPECS
+BASESPEC = filesystem.spec linux-api-headers.spec man-pages.spec glibc.spec tzdata.spec zlib.spec \
+		file.spec readline.spec m4.spec bc.spec binutils.spec gmp.spec mpfr.spec mpc.spec \
+		shadow.spec gcc.spec bzip2.spec pkg-config.spec ncurses.spec attr.spec acl.spec \
+		libcap.spec sed.spec psmisc.spec iana-etc.spec bison.spec flex.spec grep.spec bash.spec \
+		libtool.spec gdbm.spec gperf.spec expat.spec inetutils.spec perl.spec XML-Parser.spec \
+		intltool.spec autoconf.spec automake.spec xz.spec kmod.spec gettext.spec libelf.spec \
+		libffi.spec openssl.spec python3.spec ninja.spec meson.spec coreutils.spec check.spec \
+		diffutils.spec gawk.spec findutils.spec groff.spec less.spec gzip.spec iproute2.spec \
+		kbd.spec libpipeline.spec make.spec patch.spec man-db.spec tar.spec texinfo.spec \
+		vim.spec procps-ng.spec util-linux.spec e2fsprogs.spec sysklogd.spec sysvinit.spec \
+		eudev.spec lfs-bootscripts.spec raspberry-pi-kernel.spec rpi-bootscripts.spec \
+		raspberry-pi-firmware.spec wget.spec openssh.spec popt.spec rpm.spec
+all:  $(BASESPEC)
+
+filesystem.spec: filesystem
+	@../mk-spec.sh filesystem
+linux-api-headers.spec: linux-api-headers
+	@../mk-spec.sh linux-api-headers
+man-pages.spec: man-pages
+	@../mk-spec.sh man-pages
+glibc.spec: glibc
+	@../mk-spec.sh glibc
+tzdata.spec: tzdata
+	@../mk-spec.sh tzdata
+zlib.spec: zlib
+	@../mk-spec.sh zlib
+file.spec: file
+	@../mk-spec.sh file
+readline.spec: readline
+	@../mk-spec.sh readline
+m4.spec: m4
+	@../mk-spec.sh m4
+bc.spec: bc
+	@../mk-spec.sh bc
+binutils.spec: binutils
+	@../mk-spec.sh binutils
+gmp.spec: gmp
+	@../mk-spec.sh gmp
+mpfr.spec: mpfr
+	@../mk-spec.sh mpfr
+mpc.spec: mpc
+	@../mk-spec.sh mpc
+shadow.spec: shadow
+	@../mk-spec.sh shadow
+gcc.spec: gcc
+	@../mk-spec.sh gcc
+bzip2.spec: bzip2
+	@../mk-spec.sh bzip2
+pkg-config.spec: pkg-config
+	@../mk-spec.sh pkg-config
+ncurses.spec: ncurses
+	@../mk-spec.sh ncurses
+attr.spec: attr
+	@../mk-spec.sh attr
+acl.spec: acl
+	@../mk-spec.sh acl
+libcap.spec: libcap
+	@../mk-spec.sh libcap
+sed.spec: sed
+	@../mk-spec.sh sed
+psmisc.spec: psmisc
+	@../mk-spec.sh psmisc
+iana-etc.spec: iana-etc
+	@../mk-spec.sh iana-etc
+bison.spec: bison
+	@../mk-spec.sh bison
+flex.spec: flex
+	@../mk-spec.sh flex
+grep.spec: grep
+	@../mk-spec.sh grep
+bash.spec: bash
+	@../mk-spec.sh bash
+libtool.spec: libtool
+	@../mk-spec.sh libtool
+gdbm.spec: gdbm
+	@../mk-spec.sh gdbm
+gperf.spec: gperf
+	@../mk-spec.sh gperf
+expat.spec: expat
+	@../mk-spec.sh expat
+inetutils.spec: inetutils
+	@../mk-spec.sh inetutils
+perl.spec: perl
+	@../mk-spec.sh perl
+XML-Parser.spec: XML-Parser
+	@../mk-spec.sh XML-Parser
+intltool.spec: intltool
+	@../mk-spec.sh intltool
+autoconf.spec: autoconf
+	@../mk-spec.sh autoconf
+automake.spec: automake
+	@../mk-spec.sh automake
+xz.spec: xz
+	@../mk-spec.sh xz
+kmod.spec: kmod
+	@../mk-spec.sh kmod
+gettext.spec: gettext
+	@../mk-spec.sh gettext
+libelf.spec: libelf
+	@../mk-spec.sh libelf
+libffi.spec: libffi
+	@../mk-spec.sh libffi
+openssl.spec: openssl
+	@../mk-spec.sh openssl
+python3.spec: python3
+	@../mk-spec.sh python3
+ninja.spec: ninja
+	@../mk-spec.sh ninja
+meson.spec: meson
+	@../mk-spec.sh meson
+coreutils.spec: coreutils
+	@../mk-spec.sh coreutils
+check.spec: check
+	@../mk-spec.sh check
+diffutils.spec: diffutils
+	@../mk-spec.sh diffutils
+gawk.spec: gawk
+	@../mk-spec.sh gawk
+findutils.spec: findutils
+	@../mk-spec.sh findutils
+groff.spec: groff
+	@../mk-spec.sh groff
+less.spec: less
+	@../mk-spec.sh less
+gzip.spec: gzip
+	@../mk-spec.sh gzip
+iproute2.spec: iproute2
+	@../mk-spec.sh iproute2
+kbd.spec: kbd
+	@../mk-spec.sh kbd
+libpipeline.spec: libpipeline
+	@../mk-spec.sh libpipeline
+make.spec: make
+	@../mk-spec.sh make
+patch.spec: patch
+	@../mk-spec.sh patch
+man-db.spec: man-db
+	@../mk-spec.sh man-db
+tar.spec: tar
+	@../mk-spec.sh tar
+texinfo.spec: texinfo
+	@../mk-spec.sh texinfo
+vim.spec: vim
+	@../mk-spec.sh vim
+procps-ng.spec: procps-ng
+	@../mk-spec.sh procps-ng
+util-linux.spec: util-linux
+	@../mk-spec.sh util-linux
+e2fsprogs.spec: e2fsprogs
+	@../mk-spec.sh e2fsprogs
+sysklogd.spec: sysklogd
+	@../mk-spec.sh sysklogd
+sysvinit.spec: sysvinit
+	@../mk-spec.sh sysvinit
+eudev.spec: eudev
+	@../mk-spec.sh eudev
+lfs-bootscripts.spec: lfs-bootscripts
+	@../mk-spec.sh lfs-bootscripts
+raspberry-pi-kernel.spec: raspberry-pi-kernel
+	@../mk-spec.sh raspberry-pi-kernel
+rpi-bootscripts.spec: rpi-bootscripts
+	@../mk-spec.sh rpi-bootscripts
+raspberry-pi-firmware.spec: raspberry-pi-firmware
+	@../mk-spec.sh raspberry-pi-firmware
+wget.spec: wget
+	@../mk-spec.sh wget
+openssh.spec: openssh
+	@../mk-spec.sh openssh
+popt.spec: popt
+	@../mk-spec.sh popt
+rpm.spec: rpm
+	@../mk-spec.sh rpm

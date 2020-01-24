@@ -1,0 +1,24 @@
+Summary='The GMP package contains math libraries'
+Name='gmp'
+Version='6.1.2'
+Release='1'
+License='GPLv3'
+Url='http://www.gnu.org/software/gmp'
+Group='LFS/Base'
+Source='http://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.xz'
+Patch=""
+Description='The GMP package contains math libraries. These have useful functions for arbitrary precision arithmetic.'
+
+Prep='%setup -q -n %{name}-%{version}
+#cp -v configfsf.guess config.guess
+#cp -v configfsf.sub   config.sub'
+
+Build='./configure --prefix=/usr \
+	--enable-cxx \
+	--disable-static \
+	--docdir=/usr/share/doc/%{name}-%{version}
+%{make_build}'
+
+Install='%{make_install}'
+
+Files='%defattr(-,root,root)'

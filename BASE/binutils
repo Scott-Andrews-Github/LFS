@@ -1,0 +1,31 @@
+Summary='The Binutils package contains a linker, an assembler, and other tools for handling object files'
+Name='binutils'
+Version='2.32'
+Release='1'
+License='GPLv3'
+Url='http://www.gnu.org/software/binutils'
+Group='LFS/Base'
+Source='http://ftp.gnu.org/gnu/binutils/binutils-2.32.tar.xz'
+Patch=""
+Description='The Binutils package contains a linker, an assembler, and other tools for handling object files'
+
+Prep="%setup -q -n %{name}-%{version}
+sed -i '/@\tincremental_copy/d' gold/testsuite/Makefile.in
+mkdir build"
+
+Build='cd build
+../configure --prefix=/usr \
+	--enable-gold \
+	--enable-ld=default \
+	--enable-plugins \
+	--enable-shared \
+	--disable-werror \
+	--enable-64-bit-bfd \
+	--with-system-zlib \
+	%{_system_type}
+%{make_build} tooldir=/usr'
+
+Install='cd build
+%{make_install} tooldir=/usr'
+
+Files='%defattr(-,root,root)'

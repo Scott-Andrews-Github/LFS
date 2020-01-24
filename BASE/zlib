@@ -1,0 +1,23 @@
+Summary='The Zlib package contains compression and decompression routines used by some programs'
+Name='zlib'
+Version='1.2.11'
+Release='1'
+License='Other'
+Url='https://www.zlib.net'
+Group='LFS/Base'
+Source='https://zlib.net/zlib-1.2.11.tar.xz'
+Patch=""
+Description='The Zlib package contains compression and decompression routines used by some programs'
+
+Prep='%setup -q -n %{name}-%{version}'
+
+Build='./configure --prefix=/usr
+%{make_build}'
+
+Install='%{make_install}
+install -vdm 755 %{buildroot}/lib
+install -vdm 755 %{buildroot}/usr/lib
+mv -v %{buildroot}/usr/lib/libz.so.* %{buildroot}/lib
+ln -sfv ../../lib/$(readlink %{buildroot}/usr/lib/libz.so) %{buildroot}/usr/lib/libz.so'
+
+Files='%defattr(-,root,root)'

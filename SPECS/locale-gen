@@ -1,0 +1,9 @@
+log=${LOGS}/${i}
+_msg_line "Installing locales: "
+if [ -e "${log}" ]; then
+	_msg "Skipping"
+else
+	/sbin/locale-gen > ${log} 2>&1
+	_msg_success
+fi
+touch "${log}"

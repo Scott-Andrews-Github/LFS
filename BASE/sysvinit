@@ -1,0 +1,21 @@
+Summary='Controls the start up, running and shutdown of the system'
+Name='sysvinit'
+Version='2.95'
+Release='1'
+License='GPLv2'
+Url='http://savannah.nongnu.org/projects/sysvinit'
+Group='LFS/Base'
+Source='http://download.savannah.gnu.org/releases/sysvinit/sysvinit-2.95.tar.xz'
+Patch='http://www.linuxfromscratch.org/patches/lfs/9.0/sysvinit-2.95-consolidated-1.patch'
+Description='Contains programs for controlling the start up, running and
+shutdown of the system'
+
+Prep="%setup -q -n %{name}-%{version}
+%patch0 -p1"
+
+Build='%{make_build}'
+
+Install="make ROOT=%{buildroot} install"
+
+Files='%defattr(-,root,root)'
+Post=''

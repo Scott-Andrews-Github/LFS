@@ -1,0 +1,23 @@
+Summary='The Findutils package contains programs to find files'
+Name='tools-findutils'
+Version='4.6.0'
+Release='1'
+License='Any'
+Url='Any'
+Group='LFS/Tools'
+Source='http://ftp.gnu.org/gnu/findutils/findutils-4.6.0.tar.gz'
+Patch=""
+Description='The Findutils package contains programs to find files'
+
+Prep="%setup -q -n findutils-%{version}
+sed -i 's/IO_ftrylockfile/IO_EOF_SEEN/' gl/lib/*.c
+sed -i '/unistd/a #include <sys/sysmacros.h>' gl/lib/mountlist.c
+echo '#define _IO_IN_BACKUP 0x100' >> gl/lib/stdio-impl.h"
+
+Build='./configure --prefix=/tools
+%{make_build}'
+
+Install='%{make_install}
+rm -rf %{buildroot}/tools/share/{doc,info,man}'
+
+Files='%defattr(-,lfs,lfs)'

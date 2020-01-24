@@ -1,0 +1,25 @@
+Summary='Tool Command Language'
+Name='tools-tcl'
+Version='8.6.9'
+Release='1'
+License='Any'
+Url='http://tcl.sourceforge.net'
+Group='LFS/Tools'
+Source='https://downloads.sourceforge.net/tcl/tcl8.6.9-src.tar.gz'
+Patch=""
+Description='The Tcl package contains the Tool Command Language.'
+
+Prep='%setup -q -n tcl%{version}'
+
+Build='cd unix
+./configure --prefix=/tools
+%{make_build}'
+
+Install='cd unix
+%{make_install}
+chmod -v u+w %{buildroot}/tools/lib/libtcl8.6.so
+make DESTDIR=%{buildroot} install-private-headers
+ln -sv tclsh8.6 %{buildroot}/tools/bin/tclsh
+rm -rf %{buildroot}/tools/share/{doc,info,man}'
+
+Files='%defattr(-,lfs,lfs)'

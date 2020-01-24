@@ -1,0 +1,21 @@
+Summary='The popt package contains the popt libraries which are used by some programs parse command-line options.'
+Name='tools-popt'
+Version='1.16'
+Release='1'
+License='GPL'
+Url='http://rpm5.org/files/popt'
+Group='LFS/Tools'
+Source='http://rpm5.org/files/popt/popt-1.16.tar.gz'
+Patch=""
+Description='The popt package contains the popt libraries which are used by some programs parse command-line options.'
+
+Prep='%setup -q -n popt-%{version}'
+
+Build='./configure -v --prefix=/tools 	--disable-shared --enable-static
+%{make_build}'
+
+Install='%{make_install}
+rm -rf %{buildroot}/tools/lib/libpopt.la
+rm -rf %{buildroot}/tools/share/{doc,info,man}'
+
+Files='%defattr(-,lfs,lfs)'

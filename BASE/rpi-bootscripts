@@ -1,0 +1,132 @@
+Summary='Additional boot scripts for raspberry pi'
+Name='rpi-bootscripts'
+Version='20191122'
+Release='1'
+License='None'
+Url='None'
+Group='LFS/Base'
+
+Patch=""
+Description='Additional boot scripts for raspberry pi'
+
+Prep=""
+
+Build=""
+
+Install='# install directories
+install -vdm 755 %{buildroot}/etc/rc.d/init.d
+install -vdm 755 %{buildroot}/etc/rc.d/rc0.d
+install -vdm 755 %{buildroot}/etc/rc.d/rc1.d
+install -vdm 755 %{buildroot}/etc/rc.d/rc2.d
+install -vdm 755 %{buildroot}/etc/rc.d/rc3.d
+install -vdm 755 %{buildroot}/etc/rc.d/rc4.d
+install -vdm 755 %{buildroot}/etc/rc.d/rc5.d
+install -vdm 755 %{buildroot}/etc/rc.d/rc6.d
+install -vdm 755 %{buildroot}/etc/rc.d/rcS.d
+install -vdm 755 %{buildroot}/sbin
+install -vdm 755 %{buildroot}/usr/share/man/man8
+# install-fake-hwclock:
+ln -vsf ../init.d/fake-hwclock %{buildroot}/etc/rc.d/rcS.d/S01fake-hwclock
+ln -vsf ../init.d/fake-hwclock %{buildroot}/etc/rc.d/rc0.d/K01fake-hwclock
+ln -vsf ../init.d/fake-hwclock %{buildroot}/etc/rc.d/rc1.d/K01fake-hwclock
+ln -vsf ../init.d/fake-hwclock %{buildroot}/etc/rc.d/rc6.d/K01fake-hwclock
+cat > %{buildroot}/etc/rc.d/init.d/fake-hwclock <<- EOF
+#!/bin/sh
+. /lib/lsb/init-functions
+case "\${1}" in
+   start)
+      log_info_msg "Setting fake hardware clock..."
+      fake-hwclock load
+      evaluate_retval
+      ;;
+   stop)
+      log_info_msg "Storing fake hardware clock..."
+      fake-hwclock save
+      evaluate_retval
+      ;;
+   *)
+      echo "Usage: \${0} {start|stop}"
+      exit 1
+      ;;
+esac
+exit 0
+EOF
+cat > %{buildroot}/sbin/fake-hwclock <<- EOF
+#!/bin/sh
+#
+# Trivial script to load/save current contents of the kernel clock
+# from/to a file. Helpful as a *bootstrap* clock on machines where
+# there is not a useful RTC driver (e.g. on development boards). Using
+# NTP is still recommended on these machines to get to real time sync
+# once more of the system is up and running.
+#
+# Copyright 2012 Steve McIntyre <93sam@debian.org>
+#
+# License: GPLv2, see COPYING
+if [ "\$FILE"x = ""x ] ; then
+    FILE=/etc/fake-hwclock.data
+fi
+COMMAND=\$1
+if [ "\$COMMAND"x = ""x ] ; then
+    COMMAND="save"
+fi%setup -q -n %{name}-%{version}
+FORCE=false
+if [ "\$2"x = "force"x ] ; then
+    FORCE=true
+fi
+case \$COMMAND in
+    save)
+       date -u "+%Y-%m-%d %H:%M:%S" > \$FILE
+       ;;
+    load)
+       if [ -e \$FILE ] ; then
+            SAVED="\$(cat \$FILE)"
+            SAVED_SEC=\$(date -u -d "\$SAVED" '+%s')
+            NOW_SEC=\$(date -u "+%s")
+            if \$FORCE || [ \$NOW_SEC -le \$SAVED_SEC ] ; then
+                date -u -s "\$SAVED"
+            else
+                echo "Current system time: \$(date -u "+%Y-%m-%d %H:%M:%S")"
+                echo "fake-hwclock saved clock information is in the past: \$SAVED"
+                echo "To set system time to this saved clock anyway, use \"force\""
+            fi      
+        else
+            echo "Unable to read saved clock information: \$FILE does not exist"
+        fi
+        ;;
+    *)
+        echo \$0: Unknown command \$COMMAND
+        exit 1
+        ;;
+esac
+EOF
+# install-switch-cpu-governor:
+ln -sf  ../init.d/switch_cpu_governor %{buildroot}/etc/rc.d/rcS.d/S95switch_cpu_governor
+cat > %{buildroot}/etc/rc.d/init.d/switch_cpu_governor <<- EOF
+#!/bin/sh
+case "\${1}" in
+   start)
+      log_info_msg "Switching to ondemand scaling governor..."
+      SYS_CPUFREQ_GOVERNOR=/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+      if [ -e \$SYS_CPUFREQ_GOVERNOR ]; then
+        echo "ondemand" > \$SYS_CPUFREQ_GOVERNOR
+        echo 50 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
+        echo 100000 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
+        echo 50 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor
+      fi
+      evaluate_retval
+      ;;
+   status)
+      SYS_CPUFREQ_GOVERNOR=/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+      [ -e \$SYS_CPUFREQ_GOVERNOR ] && cat \$SYS_CPUFREQ_GOVERNOR
+      ;;
+   *)
+      echo "Usage: \${0} {start|status}"
+      exit 1
+      ;;
+esac
+exit 0
+EOF'
+
+Files='%defattr(-,root,root)'
+Post=''

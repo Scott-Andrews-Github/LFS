@@ -1,0 +1,33 @@
+Summary='Main C library'
+Name='tools-glibc'
+Version='2.30'
+Release='1'
+License='GPLv2'
+Url='http://www.gnu.org/software/libc'
+Group='LFS/Tools'
+Source='http://ftp.gnu.org/gnu/glibc/glibc-2.30.tar.xz'
+Patch=' '
+Description='This library provides the basic routines for allocating memory,
+searching directories, opening and closing files, reading and
+writing files, string handling, pattern matching, arithmetic,
+and so on.'
+
+Prep='%setup -q -T -b 0 -n glibc-%{version}
+mkdir -v build'
+
+Build='cd build
+../configure \
+	--prefix=/tools \
+	--host=%{LFS_TGT} \
+	--build=$(../scripts/config.guess) \
+	--enable-kernel=3.2 \
+	--with-headers=/tools/include
+%{make_build}'
+
+Install='cd build
+%{make_install}
+# Compatibility symlink for non ld-linux-armhf awareness
+ln -sfv ld-%{version}.so %{buildroot}/tools/lib/ld-linux.so.3
+rm -rf %{buildroot}/tools/share/{doc,info,man}'
+
+Files='%defattr(-,lfs,lfs) '

@@ -1,0 +1,50 @@
+log=${LOGS}/${i}
+_msg_line "Adjust tools chain: "
+if [ -e "${log}" ]; then
+	_msg "Skipping"
+else
+	mv -v /tools/bin/{ld,ld-old} >> "${log}" 2>&1
+	mv -v /tools/$(gcc -dumpmachine)/bin/{ld,ld-old} >> "${log}" 2>&1
+	mv -v /tools/bin/{ld-new,ld} >> "${log}" 2>&1
+	ln -sv /tools/bin/ld /tools/$(gcc -dumpmachine)/bin/ld >> "${log}" 2>&1
+	gcc -dumpspecs | sed -e 's@/tools@@g' -e '/\*startfile_prefix_spec:/{n;s@.*@/usr/lib/ @}' -e '/\*cpp:/{n;s@$@ -isystem /usr/include@}' > `dirname $(gcc --print-libgcc-file-name)`/specs
+
+	_msg " " >> "${log}" 2>&1
+	_msg_line "Testing tool chain: " >> "${log}"
+	echo 'int main(){}' > dummy.c
+	cc dummy.c -v -Wl,--verbose &> dummy.log
+
+	_msg " " >> "${log}" 2>&1
+	_msg "Test:	[Requesting program interpreter: /lib/ld-linux-armhf.so.3]" >> "${log}" 2>&1
+	readelf -l a.out | grep ': /lib' >> "${log}" 2>&1
+
+	_msg " " >> "${log}" 2>&1
+	_msg "Test:	/usr/lib/crt1.o succeeded" >> "${log}" 2>&1
+	_msg "Test:	/usr/lib/crti.o succeeded" >> "${log}" 2>&1
+	_msg "Test:	/usr/lib/crtn.o succeeded" >> "${log}" 2>&1
+	grep -o '/usr/lib.*/crt[1in].*succeeded' dummy.log >> "${log}" 2>&1
+
+	_msg " " >> "${log}" 2>&1
+	_msg "Test:	#include <...> search starts here:" >> "${log}" 2>&1
+	_msg "Test:	/usr/include" >> "${log}" 2>&1
+	grep -B1 '^ /usr/include' dummy.log>> "${log}" 2>&1
+
+	_msg " " >> "${log}" 2>&1
+	_msg "Test:	SEARCH_DIR("/usr/lib")" >> "${log}" 2>&1
+	_msg "Test:	SEARCH_DIR("/lib")" >> "${log}" 2>&1
+	grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g' >> "${log}" 2>&1
+
+	_msg " " >> "${log}" 2>&1
+	_msg 'Test: [RPI: Requesting program interpreter: /lib/ld-linux-armhf.so.3]' >> ${log} 2>&1
+	_msg 'Test: [X86_64: Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]' >> ${log} 2>&1
+	grep "/lib.*/libc.so.6 " dummy.log >> "${log}" 2>&1
+
+	_msg " " >> "${log}" 2>&1
+	_msg "Test:	found ld-linux.so.3 at /lib/ld-linux-armhf.so.3"  >> "${log}" 2>&1
+	grep found dummy.log >> "${log}" 2>&1
+
+	_msg " " >> "${log}" 2>&1
+	rm -v dummy.c a.out dummy.log >> "${log}" 2>&1
+	_msg_success
+fi
+touch "${log}"

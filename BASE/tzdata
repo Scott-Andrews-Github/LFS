@@ -1,0 +1,35 @@
+Summary='Time zone data'
+Name='tzdata'
+Version='2019b'
+Release='1'
+License='public-domain'
+Url='http://www.iana.org/time-zones'
+Group='LFS/Base'
+Source='https://www.iana.org/time-zones/repository/releases/tzdata2019b.tar.gz'
+Patch=""
+Description='Sources for time zone and daylight saving time data'
+
+Prep='rm -rf %{blddir}
+install -vdm 755 %{blddir}
+cd %{blddir}
+tar xf %{SOURCE0}'
+
+Build=''
+
+Install='cd %{blddir}
+ZONEINFO=%{buildroot}/usr/share/zoneinfo
+install -vdm 755 $ZONEINFO/{posix,right}
+for tz in etcetera southamerica northamerica europe africa antarctica  \
+	asia australasia backward pacificnew systemv; do
+	zic -L /dev/null		-d $ZONEINFO		-y "sh yearistype.sh" ${tz}
+	zic -L /dev/null		-d $ZONEINFO/posix	-y "sh yearistype.sh" ${tz}
+	zic -L leapseconds	-d $ZONEINFO/right	-y "sh yearistype.sh" ${tz}
+done
+cp -v zone.tab zone1970.tab iso3166.tab $ZONEINFO
+zic -d $ZONEINFO -p America/New_York
+install -vDm 555 %{buildroot}/usr/share/zoneinfo/America/New_York %{buildroot}/etc/localtime
+#-----------------------------------------------------------------------------
+#	Copy license/copying file
+install -D -m644 LICENSE %{buildroot}/usr/share/licenses/%{name}/LICENSE'
+
+Files='%defattr(-,root,root)'

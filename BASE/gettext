@@ -1,0 +1,24 @@
+Summary='The Gettext package contains utilities for internationalization and localization.'
+Name='gettext'
+Version='0.20.1'
+Release='1'
+License='GPLv3'
+Url='http://www.gnu.org/software/gettext'
+Group='LFS/Base'
+Source='http://ftp.gnu.org/gnu/gettext/gettext-0.20.1.tar.xz'
+Patch=""
+Description='The Gettext package contains utilities for internationalization and localization.
+These allow programs to be compiled with NLS (Native Language Support), enabling
+them to output messages in the users native language.'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='./configure --prefix=/usr \
+	--disable-static \
+	--docdir=/usr/share/doc/%{name}-%{version}
+%{make_build}'
+
+Install='%{make_install}'
+
+Files='%defattr(-,root,root)'
+Post=''

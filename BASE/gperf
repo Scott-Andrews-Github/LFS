@@ -1,0 +1,20 @@
+Summary='Gperf generates a perfect hash function from a key set.'
+Name='gperf'
+Version='3.1'
+Release='1'
+License='GPLv3'
+Url='http://www.gnu.org/software/gperf'
+Group='LFS/Base'
+Source='http://ftp.gnu.org/gnu/gperf/gperf-3.1.tar.gz'
+Patch=""
+Description='Gperf generates a perfect hash function from a key set.'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='./configure --prefix=/usr --docdir=/usr/share/doc/%{name}-%{version}
+%{make_build}'
+
+Install='%{make_install}'
+
+Files='%defattr(-,root,root)'
+Post=''

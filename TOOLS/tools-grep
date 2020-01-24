@@ -1,0 +1,20 @@
+Summary='The Grep package contains programs for searching through files.'
+Name='tools-grep'
+Version='3.3'
+Release='1'
+License='Any'
+Url='GPLv3'
+Group='LFS/Tools'
+Source='http://ftp.gnu.org/gnu/grep/grep-3.3.tar.xz'
+Patch=""
+Description='The Grep package contains programs for searching through files.'
+
+Prep='%setup -q -n grep-%{version}'
+
+Build='./configure --prefix=/tools
+%{make_build}'
+
+Install='%{make_install}
+rm -rf %{buildroot}/tools/share/{doc,info,man}'
+
+Files='%defattr(-,lfs,lfs)'

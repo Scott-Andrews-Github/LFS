@@ -1,0 +1,49 @@
+TODO:
+
+	add make setup rpi4 to Makefile to sed cmdfile.txt and kernel spec file for rpi4
+	
+	Build base system using lfs user
+		build tools-sudo.rpm just after tools-rpm and before post clean
+		check for shared libs ldd /tools/bin/sudo
+		add sudo to toolschain
+		add lfs to base passwd/group file
+
+	Kernel configuration:
+		make ARCH=arm menuconfig
+		disable ram blks:	CONFIG_BLK_DEV_RAM=y set to N
+		disable cgroups:	CONFIG_CGROUPS=y set to N
+		save .config
+
+NOTES:
+	CFLAGS='-O2 -march=armv7-a -mtune=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4 -pipe -fPIC -fomit-frame-pointer -ftree-vectorize'
+	CFLAGS='-O3 -march=armv7-a -mtune=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4 -pipe -fPIC -fomit-frame-pointer'
+
+	Optimization:
+		-O3. This enables additional optimizations, such as aggressive function inlining and can
+			therefore increase the speed at the expense of image size. Furthermore, this option enables
+			-ftree-vectorize - causing the compiler to attempt to automatically generate NEON code
+			from standard C or C++. See Chapter 20 Writing NEON Code.
+		-march=<arch>
+			where <arch> is the architecture version to compile for. This defines the instruction set
+			supported, It can make a significant difference to performance to specify –march=armv7-a if this
+			is supported by your platform but is not used by default by your compiler.
+		-mtune=<cpu>
+			This option provides processor specific tuning options for code, even when only an architecture
+			version is specified on the command line. For instance, the command line might contain
+			-march=armv5te -mtune=cortex-a8. This selects instructions for the architecture ARMv5TE but
+			tunes the selected instructions for execution on a Cortex-A8 processor.
+		-mfpu=<fpu>
+			If your target platform supports hardware floating-point or NEON, specify this to ensure that
+			the compiler can make use of these instructions. For a Cortex-A5 target, you would specify
+			–mfpu=neon-vfpv4.
+		-mfloat-abi=<name>
+			This option specifies the floating-point ABI to use. Values for <name> are:
+			soft
+				causes GCC to generate code containing calls to the software floating-point
+				library for floating-point operations.
+			softfp
+				enables GCC to generate code containing hardware floating-point instructions,
+				but still uses the software floating-point linkage.
+			hard
+				enables GCC to generate code containing hardware floating-point instructions
+				and uses FPU-specific hardware floating-point linkage.

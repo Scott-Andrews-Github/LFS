@@ -1,0 +1,20 @@
+Summary='The Patch package contains a program for modifying or creating files.'
+Name='tools-patch'
+Version='2.7.6'
+Release='1'
+License='GPLv3'
+Url='https://savannah.gnu.org/projects/patch'
+Group='LFS/Tools'
+Source='http://ftp.gnu.org/gnu/patch/patch-2.7.6.tar.xz'
+Patch=""
+Description='The Patch package contains a program for modifying or creating files.'
+
+Prep='%setup -q -n patch-%{version}'
+
+Build='./configure --prefix=/tools
+%{make_build}'
+
+Install='%{make_install}
+rm -rf %{buildroot}/tools/share/{doc,info,man}'
+
+Files='%defattr(-,lfs,lfs)'

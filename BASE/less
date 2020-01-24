@@ -1,0 +1,20 @@
+Summary='The Less package contains a text file viewer.'
+Name='less'
+Version='551'
+Release='1'
+License='Other'
+Url='http://www.greenwoodsoftware.com/less'
+Group='LFS/Base'
+Source='http://www.greenwoodsoftware.com/less/less-551.tar.gz'
+Patch=""
+Description='The Less package contains a text file viewer.'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='./configure --prefix=/usr --sysconfdir=/etc
+%{make_build}'
+
+Install="%{make_install}"
+
+Files='%defattr(-,root,root)'
+Post=''

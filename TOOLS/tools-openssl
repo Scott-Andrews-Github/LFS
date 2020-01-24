@@ -1,0 +1,20 @@
+Summary='The OpenSSL package contains management tools and libraries relating to cryptography'
+Name='tools-openssl'
+Version='1.1.1c'
+Release='1'
+License='GPL'
+Url='https://openssl.org/source'
+Group='LFS/Tools'
+Source='https://www.openssl.org/source/openssl-1.1.1c.tar.gz'
+Patch=""
+Description='The OpenSSL package contains management tools and libraries relating to cryptography	'
+
+Prep='%setup -q -n openssl-%{version}'
+
+Build='./config --prefix=/tools --libdir=/tools/lib --openssldir=/tools/etc/ssl no-zlib enable-md2 -mfpu=neon-vfpv4 -mfloat-abi=hard
+%{make_build}'
+
+Install='%{make_install}
+rm -rf %{buildroot}/tools/share/{doc,info,man}'
+
+Files='%defattr(-,lfs,lfs)'

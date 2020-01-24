@@ -1,0 +1,31 @@
+Summary='The Xz package contains programs for compressing and decompressing files'
+Name='xz'
+Version='5.2.4'
+Release='1'
+License='GPL'
+Url='https://tukaani.org/xz'
+Group='LFS/Base'
+Source='https://tukaani.org/xz/xz-5.2.4.tar.xz'
+Patch=""
+Description='The Xz package contains programs for compressing and decompressing files.
+It provides capabilities for the lzma and the newer xz compression formats.
+Compressing text files with xz yields a better compression percentage than
+with the traditional gzip or bzip2 commands.'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='./configure --prefix=/usr \
+		--disable-static \
+	--docdir=/usr/share/doc/%{name}-%{version}
+%{make_build}'
+
+Install='%{make_install}
+install -vdm 755 %{buildroot}/bin
+install -vdm 755 %{buildroot}/lib
+mv -v %{buildroot}/usr/bin/{lzma,unlzma,lzcat,xz,unxz,xzcat} %{buildroot}/bin
+mv -v %{buildroot}/usr/lib/liblzma.so.* %{buildroot}/lib
+ln -svf ../..//lib/$(readlink %{buildroot}/usr/lib/liblzma.so) %{buildroot}/usr/lib/liblzma.so
+'
+
+Files='%defattr(-,root,root)'
+Post=''

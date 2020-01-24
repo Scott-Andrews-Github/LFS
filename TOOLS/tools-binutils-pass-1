@@ -1,0 +1,29 @@
+Summary='Contains a linker, an assembler, and other tools for handling object files'
+Name='tools-binutils-pass-1'
+Version='2.32'
+Release='1'
+License='GPLv3'
+Url='http://www.gnu.org/software/binutils'
+Group='LFS/Tools'
+Source='http://ftp.gnu.org/gnu/binutils/binutils-2.32.tar.xz'
+Patch=
+Description='The Binutils package contains a linker, an assembler, and other tools for handling object files.'
+
+Prep='%setup -q -n binutils-%{version}
+mkdir build'
+
+Build='cd build
+../configure --prefix=/tools \
+	--with-sysroot=%{LFS} \
+	--with-lib-path=/tools/lib \
+	--target=%{LFS_TGT} \
+	--disable-nls \
+	--disable-werror
+%{make_build}'
+
+Install='rm -rf %{buildroot}
+cd build
+%{make_install}
+rm -rf %{buildroot}/tools/share/{doc,info,man}'
+
+Files='%defattr(-,lfs,lfs) '

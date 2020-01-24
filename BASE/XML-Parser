@@ -1,0 +1,20 @@
+Summary='The XML::Parser module is a Perl interface to James Clark XML parser, Expat'
+Name='XML-Parser'
+Version='2.44'
+Release='1'
+License='Non-GPL'
+Url='https://github.com/chorny/XML-Parser'
+Group='LFS/Base'
+Source='https://cpan.metacpan.org/authors/id/T/TO/TODDR/XML-Parser-2.44.tar.gz'
+Patch=""
+Description='The XML::Parser module is a Perl interface to James Clark XML parser, Expat'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='perl Makefile.PL
+%{make_build}'
+
+Install='%{make_install}'
+
+Files='%defattr(-,root,root)'
+Post=''

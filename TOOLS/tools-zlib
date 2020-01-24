@@ -1,0 +1,20 @@
+Summary='The Zlib package contains compression and decompression routines used by some programs'
+Name='tools-zlib'
+Version='1.2.11'
+Release='1'
+License='Other'
+Url='http://zlib.net'
+Group='LFS/Tools'
+Source='https://zlib.net/zlib-1.2.11.tar.xz'
+Patch=""
+Description='The Zlib package contains compression and decompression routines used by some programs'
+
+Prep='%setup -q -n zlib-%{version}'
+
+Build='./configure --prefix=/tools --static
+%{make_build}'
+
+Install='%{make_install}
+ rm -rf %{buildroot}/tools/share/{doc,info,man}'
+
+Files='%defattr(-,lfs,lfs)'

@@ -1,0 +1,20 @@
+Summary='
+Name='
+Version='
+Release='1'
+License='
+Url='
+Group='LFS/Base'
+Source='
+Patch=""
+Description='
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='
+%{make_build}'
+
+Install="%{make_install}"
+
+Files='%defattr(-,root,root)'
+Post=''

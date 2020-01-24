@@ -1,0 +1,50 @@
+Summary='The OpenSSH package contains ssh clients and the sshd daemon.'
+Name='openssh'
+Version='8.0p1'
+Release='1'
+License='Multi'
+Url='None'
+Group='LFS/Base'
+Source='http://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-8.0p1.tar.gz http://anduin.linuxfromscratch.org/BLFS/blfs-bootscripts/blfs-bootscripts-20190609.tar.xz'
+Patch=""
+Description='The OpenSSH package contains ssh clients and the sshd daemon.
+This is useful for encrypting authentication and subsequent traffic over a network.
+The ssh and scp commands are secure implementations of telnet and rcp respectively.'
+
+Prep="%setup -q -n %{name}-%{version}
+%setup -q -T -D -a 1 -n %{name}-%{version}"
+
+Build='./configure --prefix=/usr \
+	--sysconfdir=/etc/ssh \
+	--with-md5-passwords \
+	--with-privsep-path=/var/lib/sshd
+%{make_build}'
+
+Install="%{make_install}
+install -vdm700 %{buildroot}/var/lib/sshd
+install -vdm755 %{buildroot}/usr/bin
+install -vdm755 %{buildroot}/usr/share/man/man1
+install -vm755 -d %{buildroot}/usr/share/doc/%{name}-%{version}
+install -vm755 contrib/ssh-copy-id %{buildroot}/usr/bin
+install -vm644 contrib/ssh-copy-id.1 %{buildroot}/usr/share/man/man1
+install -v -m755 -d /usr/share/doc/openssh-8.0p1 
+install -vm644 INSTALL LICENCE OVERVIEW README* %{buildroot}/usr/share/doc/%{name}-%{version}
+#	Boot scripts
+cd blfs-bootscripts-20190609
+make DESTDIR=%{buildroot} install-sshd"
+
+Files='%defattr(-,root,root)'
+
+Pre='getent group sshd >/dev/null || groupadd -f -g 50 -r GROUPNAME
+if ! getent passwd sshd >/dev/null ; then
+    if ! getent passwd 50 >/dev/null ; then
+      useradd -r -u 50 -g sshd -d /var/lib/sshd -s /sbin/nologin -c "sshd PrivSep" sshd
+    else
+      useradd -r -g sshd -d /var/lib/sshd -s /sbin/nologin -c "sshd PrivSep" sshd
+    fi
+fi
+exit 0'
+
+PostUN='getent passwd sshd >/dev/null && userdel sshd
+getent group sshd >/dev/null  && groupdel sshd
+exit 0'

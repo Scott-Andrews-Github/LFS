@@ -1,0 +1,36 @@
+Summary='The Python 3 package contains the Python development environment.'
+Name='python3'
+Version='3.7.4'
+Release='1'
+License='Any'
+Url='https://www.python.org'
+Group='LFS/Base'
+Source='https://www.python.org/ftp/python/3.7.4/Python-3.7.4.tar.xz https://docs.python.org/ftp/python/doc/3.7.4/python-3.7.4-docs-html.tar.bz2'
+Patch=""
+Description='The Python 3 package contains the Python development environment.
+This is useful for object-oriented programming, writing scripts,
+prototyping large programs or developing entire applications.'
+
+Prep="%setup -q -n "Python-%{version}"
+%setup -q -T -D -a 1  -n Python-%{version}"
+
+Build='./configure --prefix=/usr \
+	--enable-shared \
+	--with-system-expat \
+	--with-system-ffi \
+	--with-ensurepip=yes
+%{make_build}'
+
+Install='%{make_install}
+chmod -v 755 %{buildroot}/usr/lib/libpython3.7m.so
+chmod -v 755 %{buildroot}/usr/lib/libpython3.so
+ln -sfv pip3.7 %{buildroot}/usr/bin/pip3
+ln -svf python3.7 %{buildroot}/usr/bin/python
+install -v -dm755 %{buildroot}/usr/share/doc/python-%{version}/html
+cp -var python-%{version}-docs-html/* %{buildroot}/usr/share/doc/python-%{version}/html
+rm %{buildroot}/usr/lib/python3.7/cgi.py
+rm "%{buildroot}/usr/lib/python3.7/site-packages/setuptools/command/launcher manifest.xml"
+rm "%{buildroot}/usr/lib/python3.7/site-packages/setuptools/script (dev).tmpl" '
+
+Files='%defattr(-,root,root)'
+Post=''

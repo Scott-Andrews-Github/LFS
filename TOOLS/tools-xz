@@ -1,0 +1,20 @@
+Summary='The Xz package contains programs for compressing and decompressing files'
+Name='tools-xz'
+Version='5.2.4'
+Release='1'
+License='GPL'
+Url='https://tukaani.org/xz'
+Group='LFS/Tools'
+Source='https://tukaani.org/xz/xz-5.2.4.tar.xz'
+Patch=""
+Description='The Xz package contains programs for compressing and decompressing files'
+
+Prep='%setup -q -n xz-%{version}'
+
+Build='./configure --prefix=/tools
+%{make_build}'
+
+Install='%{make_install}
+rm -rf %{buildroot}/tools/share/{doc,info,man}'
+
+Files='%defattr(-,lfs,lfs)'

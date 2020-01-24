@@ -1,0 +1,21 @@
+Summary='The Bash package contains the Bourne-Again SHell'
+Name='tools-bash'
+Version='5.0'
+Release='1'
+License='GPLv3'
+Url='http://www.gnu.org/software/bash'
+Group='LFS/Tools'
+Source='http://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz'
+Patch=""
+Description='The Bash package contains the Bourne-Again SHell.'
+
+Prep='%setup -q -n bash-%{version}'
+
+Build='./configure --prefix=/tools --without-bash-malloc
+%{make_build}'
+
+Install='%{make_install}
+ln -sv bash %{buildroot}/tools/bin/sh
+rm -rf %{buildroot}/tools/share/{doc,info,man}'
+
+Files='%defattr(-,lfs,lfs)'

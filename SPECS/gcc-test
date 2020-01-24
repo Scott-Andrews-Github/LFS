@@ -1,0 +1,52 @@
+log=${LOGS}/${i}
+_msg_line "Testing gcc: "
+if [ -e "${log}" ]; then
+	_msg "Skipping"
+else
+	echo 'int main(){}' > dummy.c
+	cc dummy.c -v -Wl,--verbose &> dummy.log
+
+	_msg " " >> "${log}" 2>&1
+	readelf -l a.out | grep ': /lib' >> "${log}" 2>&1
+	_msg "Test:" >> "${log}" 2>&1
+	_msg "[Requesting program interpreter: /lib/ld-linux-armhf.so.3]" >> "${log}" 2>&1
+
+	_msg " " >> "${log}" 2>&1
+	grep -o '/usr/lib.*/crt[1in].*succeeded' dummy.log >> "${log}" 2>&1
+	_msg "Test:" >> "${log}" 2>&1
+	_msg "/usr/lib/gcc/armv7l-unknown-linux-gnueabihf/8.2.0/../../../crt1.o succeeded" >> "${log}" 2>&1
+	_msg "/usr/lib/gcc/armv7l-unknown-linux-gnueabihf/8.2.0/../../../crti.o succeeded" >> "${log}" 2>&1
+	_msg "/usr/lib/gcc/armv7l-unknown-linux-gnueabihf/8.2.0/../../../crtn.o succeeded" >> "${log}" 2>&1
+
+	_msg " " >> "${log}" 2>&1
+	grep -B4 '^ /usr/include' dummy.log >> "${log}" 2>&1
+	_msg "Test:" >> "${log}" 2>&1
+	_msg "#include <...> search starts here:" >> "${log}" 2>&1
+	_msg "/usr/lib/gcc/armv7l-unknown-linux-gnueabihf/8.2.0/include" >> "${log}" 2>&1
+	_msg "/usr/local/include" >> "${log}" 2>&1
+	_msg "/usr/lib/gcc/armv7l-unknown-linux-gnueabihf/8.2.0/include-fixed" >> "${log}" 2>&1
+	_msg "/usr/include" >> "${log}" 2>&1
+
+	_msg " " >> "${log}" 2>&1
+	grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g' >> "${log}" 2>&1
+	_msg "Test:" >> "${log}" 2>&1
+	_msg "SEARCH_DIR("/usr/armv7l-unknown-linux-gnueabi/lib")" >> "${log}" 2>&1
+	_msg "SEARCH_DIR("/usr/local/lib")" >> "${log}" 2>&1
+	_msg "SEARCH_DIR("/lib")" >> "${log}" 2>&1
+	_msg "SEARCH_DIR("/usr/lib")" >> "${log}" 2>&1
+
+	_msg " " >> "${log}" 2>&1
+	grep "/lib.*/libc.so.6 " dummy.log >> "${log}" 2>&1
+	_msg "Test:" >> "${log}" 2>&1
+	_msg "attempt to open /lib/libc.so.6 succeeded" >> "${log}" 2>&1
+
+	_msg " " >> "${log}" 2>&1
+	grep found dummy.log >> "${log}" 2>&1
+	_msg "Test:" >> "${log}" 2>&1
+	_msg "found ld-linux-armhf.so.3 at /lib/ld-linux-armhf.so.3"  >> "${log}" 2>&1
+
+	_msg " " >> "${log}" 2>&1
+	rm -v dummy.c a.out dummy.log >> "${log}" 2>&1
+	_msg_success
+fi
+touch "${log}"

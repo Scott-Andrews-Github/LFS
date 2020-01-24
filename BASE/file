@@ -1,0 +1,20 @@
+Summary='The File package contains a utility for determining the type of a given file or files'
+Name='file'
+Version='5.37'
+Release='1'
+License='Other'
+Url='https://www.darwinsys.com/file'
+Group='LFS/Base'
+Source='ftp://ftp.astron.com/pub/file/file-5.37.tar.gz'
+Patch=""
+Description='The File package contains a utility for determining the type of a given file or files'
+
+Prep='%setup -q -n %{name}-%{version}'
+
+Build='./configure --prefix=/usr
+%{make_build}'
+
+Install='%{make_install}'
+
+Files='%defattr(-,root,root)'
+

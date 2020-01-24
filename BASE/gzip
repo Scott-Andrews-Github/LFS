@@ -1,0 +1,22 @@
+Summary='The Gzip package contains programs for compressing and decompressing files.'
+Name='gzip'
+Version='1.10'
+Release='1'
+License='GPLv3'
+Url='http://www.gnu.org/software/gzip'
+Group='LFS/Base'
+Source='http://ftp.gnu.org/gnu/gzip/gzip-1.10.tar.xz'
+Patch=""
+Description='The Gzip package contains programs for compressing and decompressing files.'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='./configure --prefix=/usr
+%{make_build}'
+
+Install="%{make_install}
+install -vdm 755 %{buildroot}/bin
+mv -v %{buildroot}/usr/bin/gzip %{buildroot}/bin"
+
+Files='%defattr(-,root,root)'
+Post=''

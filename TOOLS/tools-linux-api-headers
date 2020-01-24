@@ -1,0 +1,22 @@
+Summary='Linux API header files'
+Name='tools-linux-api-headers'
+Version='4.19.y'
+Release='1'
+License='GPLv2'
+Url='http://www.kernel.org'
+Group='LFS/Tools'
+Source='https://github.com/raspberrypi/linux/archive/rpi-4.19.y.tar.gz'
+Patch=""
+Description='The Linux API Headers expose the kernel API for use by Glibc.'
+
+Prep='%setup -q -n linux-rpi-4.19.y'
+
+Build='make mrproper'
+
+Install='make INSTALL_HDR_PATH=dest headers_install
+find dest/include \( -name .install -o -name ..install.cmd \) -delete
+install -vdm 755 %{buildroot}/tools/include
+cp -rv dest/include/* %{buildroot}/tools/include
+rm -rf %{buildroot}/tools/share/{doc,info,man}'
+
+Files='%defattr(-,lfs,lfs) '

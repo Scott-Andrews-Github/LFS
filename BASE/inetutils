@@ -1,0 +1,32 @@
+Summary='The Inetutils package contains programs for basic networking.'
+Name='inetutils'
+Version='1.9.4'
+Release='1'
+License='GPLv3'
+Url='http://www.gnu.org/software/inetutils'
+Group='LFS/Base'
+Source='http://ftp.gnu.org/gnu/inetutils/inetutils-1.9.4.tar.xz'
+Patch=""
+Description='The Inetutils package contains programs for basic networking.'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='./configure --prefix=/usr \
+	--localstatedir=/var \
+	--disable-logger \
+	--disable-whois \
+	--disable-rcp \
+	--disable-rexec \
+	--disable-rlogin \
+	--disable-rsh \
+	--disable-servers
+%{make_build}'
+
+Install='%{make_install}
+install -vdm 755 %{buildroot}/bin
+install -vdm 755 %{buildroot}/sbin
+mv -v %{buildroot}/usr/bin/{hostname,ping,ping6,traceroute} %{buildroot}/bin
+mv -v %{buildroot}/usr/bin/ifconfig %{buildroot}/sbin'
+
+Files='%defattr(-,root,root)'
+Post=''

@@ -1,0 +1,22 @@
+Summary='The MPFR package contains functions for multiple precision math.'
+Name='mpfr'
+Version='4.0.2'
+Release='1'
+License='GPLv3'
+Url='https://www.mpfr.org'
+Group='LFS/Base'
+Source='http://www.mpfr.org/mpfr-4.0.2/mpfr-4.0.2.tar.xz'
+Patch=""
+Description='The MPFR package contains functions for multiple precision math.'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='./configure --prefix=/usr \
+	--disable-static \
+	--enable-thread-safe \
+	--docdir=/usr/share/doc/%{name}-%{version}
+%{make_build}'
+
+Install='%{make_install}'
+
+Files='%defattr(-,root,root)'

@@ -1,0 +1,163 @@
+#-----------------------------------------------------------------------
+#	Copyright 2020 Scott Andrews
+#-----------------------------------------------------------------------
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+
+#	You should have received a copy of the GNU General Public License
+#	along with this program. If not, see https://www.gnu.org/licenses
+#-----------------------------------------------------------------------
+OVERVIEW:
+	This build tracks linux from scratch version 9.0. This build system
+	will build LFS for the RaspberryPi.  I choose to add an external
+	hard drive in an enclosure to build all the required packages so
+	as to speed up the build process and not over stress the host
+	SD card with all the read/writing during the build process. I then
+	use and installer script to install the newly built rpms onto a
+	SD card mounted via USB interface. Format the card and mount
+	( see instructions below ) it at /mnt and run the installer script.
+	It will install the binary rpms onto the new SD card and set it up.
+	
+	I used raspian buster lite for this build. 
+		
+	It is recommended to use sshd to login to the pi that will be building these
+	packages and use screen so when you logoff or shut down the
+	ssh connection the build will continue.
+	
+	I choose to use the rpm package manager because I install the binary
+	rpms to an sd card rather than to play around swaping partitions to get
+	it to boot.  This way eliminates the need to mount a partition at /mnt/lfs
+	and a partition at /mnt/lfs/boot.  You can mount partitions at those mount
+	points if you like.  the partition mounted at /mnt/lfs/boot needs to be a
+	msdos vfat partition formated with mkfs.vfat.  That is a requiremnet of
+	the raspberry pi platform.
+	
+	I create the rpm spec files from data in the BASE and TOOLS sub directories.
+	That keeps the layout for the rpm spec files all the same and it allows me to
+	update the spec files by editing the data in those subdirectories and issuing
+	a make spec.  The command make spec will then create a new spec file(s) 
+	if needed.  To update to the SVN book or a later LFS stable book only requires
+	editing the spec data files and reissuing make spec.
+	
+#-----------------------------------------------------------------------	
+LAYOUT:
+	/mnt/lfs/usr/src/LFS		 - build system directory
+		+	BASE		 - data to create base spec files
+		+	BUILD		 - rpmbuiild building directory
+		+	BUILDROOT	 - rpmbuiild package root directory
+		+	DOCS		 - LFS book and other docs
+		+	INFO		 - rpm binary package information
+		+	LOGS		 - build logs
+		+	PROVIDES	 - rpm binary package information
+		+	REQUIRES	 - rpm binary package information
+		+	RPMDB		 - where rpm stores its data
+		+	RPMS		 - binary rpms
+		+	SOURCES		 - source tarballs
+		+	SPECS		 - rpm spec files
+		+	SRPMS		 - pm source rpms
+		+	TMP		 - rpm tmp script work directory
+		+	TOOLS		 - data to create toolchain spec files
+		+	installer.sh	 - install binary rpms to sd card
+		+	LICENSE		 - copyright license
+		+	README		 - This file
+		+	Makefile	 - Well I don't know this is
+		+	base.text	 - list of base package to build
+		+	tools.text	 - list of toolchain packages to build
+		+	builder.sh	 - builds/installs binary rpm packages
+					 - listed in base.text, tools.text
+		+	version-check.sh - check host for needed packages
+#-----------------------------------------------------------------------
+RASPIAN REQUIREMENTS:
+	run version-check.sh and install missing packages
+	raspian: 2019-08-raspian-buster-lite.img
+	bison
+	gawk
+	m4
+	texinfo
+	rpm
+#-----------------------------------------------------------------------
+HOST REQUIREMENTS:
+	1. wget
+	2. git
+	3. sudo
+	4. rpm
+#-----------------------------------------------------------------------
+WARNING:
+	This build system is designed in such a way to not be able to trash
+	your host system.  Mistakes can happen. Not responsible for trashed
+	host system.  You bear all responsibilities for any failures.
+#-----------------------------------------------------------------------
+GENERAL NOTES:
+	The build system needs to be installed to the directory:
+	/mnt/lfs/usr/src/LFS
+#-----------------------------------------------------------------------
+ADDITIONS to LFS:
+	popt		# needed for rpm
+	rpm		# package manager
+	wget		# needed to fetch packages
+	open-ssh	# for headless operation
+#-----------------------------------------------------------------------
+BUILD PROCEDURE:
+	#	setup
+	login as root user:
+		install -vdm 755 /mnt/lfs/usr/src
+		cd /mnt/lfs/usr/src
+		git clone <repository>
+		#	toolchain build
+		cd /mnt/lfs/usr/src/LFS
+		make -f Makefile.lfs setup
+		make -f Makefile.lfs setup-tools
+		su - lfs
+	lfs user:
+		source bash_profile
+		make -f Makefile.lfs spec
+		make -f Makefile.lfs toolchain
+		exit
+	root user:
+		#	base build
+		make -f Makefile.lfs setup-base
+		./chroot.sh
+		source /root/bashrc
+		cd /usr/src/LFS/
+		make -f Makefile.lfs base
+	This completes the build.
+	You will need to use the Installer script to create a bootable SD card,
+	see below. 
+#-----------------------------------------------------------------------
+INSTALLER SCRIPT:
+	The installer.sh script will take the binary rpms ( chapter 6 ) and
+	install them into a partition that YOU mounted on /mnt. If you want
+	to install else where then change ROOTPATH="/mnt/installer" to the
+	installation partition mounted by YOU.
+	You will need a host that has dosfs installed so that you can create
+	an msdos vfat partition.  The SDcard will need the following layout
+	The partition 1 is msdos vfat type c 512MB in size, and partition 2
+	is a linux partition ext4 of 20GB or more
+	 
+	 Device        Boot  Start  End      Sectors  Size Id Type
+	/dev/mmcblk0p1       2048   544767  542720    265M b  W95 FAT32
+	/dev/mmcblk0p2       544768 42487807 41943040 20G  83 Linux
+
+	You will need to change sdxx, sdx1 and sdx2 to the proper device
+	This script will also add a user rpi with a blank password.
+	 1.	Insert SD into USB SD dongle that plugs into USB port
+	 2.	fdisk -l shows where card in at in the device chain
+	 3.	fdisk /dev/sdxx
+	 4.		create MSDOS partition, "o" command in fdisk
+	 5.		create primary partition 1 size of 256MB
+	 6.		create primary partition 2 rest of the drive or what ever
+	 7.		change partiton type of partition 1 to c ( MSDOS vfat )
+	 8.		write changes
+ 	 9.		mkfs.vfat /dev/sdx1
+	10.		mkfs.ext4 -m 1 -L ROOT /dev/sdx2
+	11.		mount /dev/sdx2 /mnt/installer
+	12.		install -vdm 755 /mnt/installer/boot
+	13.		mount /dev/sdx1 /mnt/installer/boot
+	14.		./installer.sh

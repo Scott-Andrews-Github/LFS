@@ -1,0 +1,43 @@
+Summary='The E2fsprogs package contains the utilities for handling the ext2 file system.'
+Name='e2fsprogs'
+Version='1.45.3'
+Release='1'
+License='GPLv2'
+Url='http://e2fsprogs.sourceforge.net'
+Group='LFS/Base'
+Source='https://downloads.sourceforge.net/project/e2fsprogs/e2fsprogs/v1.45.3/e2fsprogs-1.45.3.tar.gz'
+Patch=""
+Description='The E2fsprogs package contains the utilities for handling the ext2 file system.
+It also supports the ext3 and ext4 journaling file systems.'
+
+Prep="%setup -q -n %{name}-%{version}
+mkdir -v build"
+
+Build='cd build
+../configure --prefix=/usr \
+	--bindir=/bin \
+	--with-root-prefix="" \
+	--enable-elf-shlibs \
+	--disable-libblkid \
+	--disable-libuuid \
+	--disable-uuidd \
+	--disable-fsck
+%{make_build}'
+
+Install="cd build
+%{make_install}
+make DESTDIR=%{buildroot} install-libs
+cd -
+chmod -v u+w %{buildroot}/usr/lib/{libcom_err,libe2p,libext2fs,libss}.a
+gunzip -v %{buildroot}/usr/share/info/libext2fs.info.gz
+install-info --dir-file=%{buildroot}/usr/share/info/dir %{buildroot}/usr/share/info/libext2fs.info
+makeinfo -o doc/com_err.info lib/et/com_err.texinfo
+install -v -m644 doc/com_err.info %{buildroot}/usr/share/info
+install-info --dir-file=/usr/share/info/dir %{buildroot}/usr/share/info/com_err.info"
+
+Files='%defattr(-,root,root)'
+
+Post='pushd /usr/share/info
+rm -v dir
+for f in *;	do install-info $f dir 2>/dev/null; done
+popd'

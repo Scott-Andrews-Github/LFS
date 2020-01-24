@@ -1,0 +1,36 @@
+Summary='The Coreutils package contains utilities for showing and setting the basic system characteristics'
+Name='coreutils'
+Version='8.31'
+Release='1'
+License='GPLv3'
+Url='Any'
+Group='LFS/Base'
+Source='http://ftp.gnu.org/gnu/coreutils/coreutils-8.31.tar.xz'
+Patch='http://www.linuxfromscratch.org/patches/lfs/9.0/coreutils-8.31-i18n-1.patch'
+Description='The Coreutils package contains utilities for showing and setting the basic system characteristics'
+
+Prep="%global _default_patch_fuzz 2
+%setup -q -n %{name}-%{version}
+%patch0 -p1
+sed -i '/test.lock/s/^/#/' gnulib-tests/gnulib.mk"
+
+Build='autoreconf -fiv
+FORCE_UNSAFE_CONFIGURE=1 ./configure \
+	--prefix=/usr \
+	--enable-no-install-program=kill,uptime
+%{make_build}'
+
+Install='%{make_install}
+install -vdm 755 %{buildroot}/bin
+install -vdm 755 %{buildroot}/usr/sbin
+install -vdm 755 %{buildroot}/usr/share/man/man8
+mv -v %{buildroot}/usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} %{buildroot}/bin
+mv -v %{buildroot}/usr/bin/{false,ln,ls,mkdir,mknod,mv,pwd,rm} %{buildroot}/bin
+mv -v %{buildroot}/usr/bin/{rmdir,stty,sync,true,uname} %{buildroot}/bin
+mv -v %{buildroot}/usr/bin/chroot %{buildroot}/usr/sbin
+mv -v %{buildroot}/usr/share/man/man1/chroot.1 %{buildroot}/usr/share/man/man8/chroot.8
+sed -i s/\"1\"/\"8\"/1 %{buildroot}/usr/share/man/man8/chroot.8
+mv -v %{buildroot}/usr/bin/{head,nice,sleep,touch} %{buildroot}/bin'
+
+Files='%defattr(-,root,root)'
+Post=''

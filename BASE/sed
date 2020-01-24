@@ -1,0 +1,25 @@
+Summary='The Sed package contains a stream editor'
+Name='sed'
+Version='4.7'
+Release='1'
+License='GPLv3'
+Url='Any'
+Group='LFS/Base'
+Source='http://ftp.gnu.org/gnu/sed/sed-4.7.tar.xz'
+Patch=""
+Description='The Sed package contains a stream editor'
+
+Prep="%setup -q -n %{name}-%{version}
+sed -i 's/usr/tools/'                 build-aux/help2man
+sed -i 's/testsuite.panic-tests.sh//' Makefile.in"
+
+Build='./configure --prefix=/usr --bindir=/bin
+%{make_build}
+%{make_build} html'
+
+Install='%{make_install}
+install -d -m755 %{buildroot}/usr/share/doc/%{name}-%{version}
+install -m644 doc/sed.html %{buildroot}/usr/share/doc/%{name}-%{version}'
+
+Files='%defattr(-,root,root)'
+Post=''

@@ -1,0 +1,22 @@
+Summary='The IPRoute2 package contains programs for basic and advanced IPV4-based networking.'
+Name='iproute2'
+Version='5.2.0'
+Release='1'
+License='GPLv2'
+Url='https://www.kernel.org/pub/linux/utils/net/iproute2'
+Group='LFS/Base'
+Source='https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-5.2.0.tar.xz'
+Patch=""
+Description='The IPRoute2 package contains programs for basic and advanced IPV4-based networking.'
+
+Prep="%setup -q -n %{name}-%{version}
+sed -i /ARPD/d Makefile
+rm -fv man/man8/arpd.8
+sed -i 's/.m_ipt.o//' tc/Makefile"
+
+Build='make -j1'
+
+Install="%{make_install} DOCDIR=/usr/share/doc/%{name}-%{version}"
+
+Files='%defattr(-,root,root)'
+Post=''

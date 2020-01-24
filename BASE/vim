@@ -1,0 +1,40 @@
+Summary='The Vim package contains a powerful text editor.'
+Name='vim'
+Version='8.1.1846'
+Release='1'
+License='Charityware'
+Url='https://www.vim.org'
+Group='LFS/Base'
+Source='https://github.com/vim/vim/archive/v8.1.1846/vim-8.1.1846.tar.gz'
+Patch=""
+Description='The Vim package contains a powerful text editor.'
+
+Prep="%setup -q -n %{name}-%{version}
+echo '#define SYS_VIMRC_FILE \"/etc/vimrc\"' >> src/feature.h"
+
+Build='./configure --prefix=/usr
+%{make_build}'
+
+Install='%{make_install}
+install -vdm 755 %{buildroot}%{_sysconfdir}/vimrc
+cat > %{_sysconfdir}/vimrc <<- "EOF"
+" Begin /etc/vimrc
+
+" Ensure defaults are set before customizing settings, not after
+source $VIMRUNTIME/defaults.vim
+let skip_defaults_vim=1 
+
+set nocompatible
+set backspace=2
+set mouse=r
+syntax on
+if (&term == "xterm") || (&term == "putty")
+	set background=dark
+endif
+
+" End /etc/vimrc
+EOF
+'
+
+Files='%defattr(-,root,root)'
+Post=''

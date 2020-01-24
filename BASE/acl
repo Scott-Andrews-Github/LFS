@@ -1,0 +1,29 @@
+Summary='The Acl package contains utilities to administer Access Control Lists'
+Name='acl'
+Version='2.2.53'
+Release='1'
+License='GPLv2'
+Url='https://savannah.nongnu.org/projects/acl'
+Group='LFS/Base'
+Source='http://download.savannah.gnu.org/releases/acl/acl-2.2.53.tar.gz'
+Patch=""
+Description='The Acl package contains utilities to administer Access Control Lists, which are
+used to define more fine-grained discretionary access rights for files and directories.'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='./configure --prefix=/usr \
+	--bindir=/bin \
+	--disable-static \
+	--libexecdir=/usr/lib \
+	--docdir=/usr/share/doc/%{name}-%{version} 
+%{make_build}'
+
+Install='%{make_install}
+install -vdm 755 %{buildroot}/lib
+install -vdm 755 %{buildroot}/usr/lib
+mv -v %{buildroot}/usr/lib/libacl.so.* %{buildroot}/lib
+ln -sfv ../../lib/$(readlink %{buildroot}/usr/lib/libacl.so) %{buildroot}/usr/lib/libacl.so
+'
+Files='%defattr(-,root,root)'
+Post=''

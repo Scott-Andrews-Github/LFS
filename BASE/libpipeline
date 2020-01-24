@@ -1,0 +1,20 @@
+Summary='The Libpipeline package contains a library for manipulating pipelines of subprocesses in a flexible and convenient way.'
+Name='libpipeline'
+Version='1.5.1'
+Release='1'
+License='GPLv3'
+Url='http://libpipeline.nongnu.org'
+Group='LFS/Base'
+Source='http://download.savannah.gnu.org/releases/libpipeline/libpipeline-1.5.1.tar.gz'
+Patch=""
+Description='The Libpipeline package contains a library for manipulating pipelines of subprocesses in a flexible and convenient way.'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='./configure --prefix=/usr
+%{make_build}'
+
+Install="%{make_install}"
+
+Files='%defattr(-,root,root)'
+Post=''

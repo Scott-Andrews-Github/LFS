@@ -1,0 +1,23 @@
+Summary='The Tar package contains an archiving program.'
+Name='tar'
+Version='1.32'
+Release='1'
+License='GPLv3'
+Url='Any'
+Group='LFS/Base'
+Source='http://ftp.gnu.org/gnu/tar/tar-1.32.tar.xz'
+Patch=""
+Description='The Tar package contains an archiving program.'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='FORCE_UNSAFE_CONFIGURE=1  \
+./configure --prefix=/usr \
+		--bindir=/bin
+%{make_build}'
+
+Install="%{make_install}
+make -C doc DESTDIR=%{buildroot} install-html docdir=/usr/share/doc/%{name}-%{version}"
+
+Files='%defattr(-,root,root)'
+Post=''

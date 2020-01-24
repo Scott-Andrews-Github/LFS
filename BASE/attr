@@ -1,0 +1,31 @@
+Summary='The attr package contains utilities to administer the extended attributes on filesystem objects.'
+Name='attr'
+Version='2.4.48'
+Release='1'
+License='GPLv2'
+Url='http://savannah.nongnu.org/projects/attr'
+Group='LFS/Base'
+Source='http://download.savannah.gnu.org/releases/attr/attr-2.4.48.tar.gz'
+Patch=""
+Description='The attr package contains utilities to administer the extended attributes on filesystem objects.'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='./configure --prefix=/usr \
+	--bindir=/bin \
+	--disable-static \
+	--sysconfdir=/etc \
+	--docdir=/usr/share/doc/%{name}-%{version}
+%{make_build}
+'
+
+Install='%{make_install}
+install -vdm 755 %{buildroot}/lib
+mv -v %{buildroot}/usr/lib/libattr.so.* %{buildroot}/lib
+install -vdm 755 %{buildroot}/usr/lib
+ln -sfv ../../lib/$(readlink %{buildroot}/usr/lib/libattr.so) %{buildroot}/usr/lib/libattr.so
+'
+Files='%defattr(-,root,root)
+'
+Post='
+'

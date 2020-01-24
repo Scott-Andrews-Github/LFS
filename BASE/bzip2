@@ -1,0 +1,40 @@
+Summary='The Bzip2 package contains programs for compressing and decompressing files'
+Name='bzip2'
+Version='1.0.8'
+Release='1'
+License='Other'
+Url='None'
+Group='LFS/Base'
+Source='https://www.sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz'
+Patch='http://www.linuxfromscratch.org/patches/lfs/9.0/bzip2-1.0.8-install_docs-1.patch'
+Description='The Bzip2 package contains programs for compressing and decompressing files
+Compressing text files with bzip2 yields a much better compression percentage
+than with the traditional gzip.'
+
+Prep='%setup -q -n %{name}-%{version}
+%patch0 -p1
+sed -i "s|-O2|${CFLAGS}|g" Makefile
+sed -i "s|-O2|${CFLAGS}|g" Makefile-libbz2_so
+'
+Prep+="sed -i 's@\(ln -s -f \)\$(PREFIX)/bin/@\1@' Makefile
+sed -i 's@(PREFIX)/man@(PREFIX)/share/man@g' Makefile"
+
+Build='make -f Makefile-libbz2_so
+make clean
+%{make_build}'
+
+Install='make PREFIX=%{buildroot}/usr  install
+install -vdm 755 %{buildroot}/bin
+cp -v bzip2-shared %{buildroot}/bin/bzip2
+install -vdm 755 %{buildroot}/lib
+cp -av libbz2.so* %{buildroot}/lib
+install -vdm 755 %{buildroot}/usr/lib
+ln -sv ../../lib/libbz2.so.1.0 %{buildroot}/usr/lib/libbz2.so
+rm -v %{buildroot}/usr/bin/{bunzip2,bzcat,bzip2}
+ln -sv bzip2 %{buildroot}/bin/bunzip2
+ln -sv bzip2 %{buildroot}/bin/bzcat'
+
+Files='%defattr(-,root,root)'
+
+Post='
+'

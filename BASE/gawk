@@ -1,0 +1,23 @@
+Summary='The Gawk package contains programs for manipulating text files.'
+Name='gawk'
+Version='5.0.1'
+Release='1'
+License='GPLv3'
+Url='http://www.gnu.org/software/gawk'
+Group='LFS/Base'
+Source='http://ftp.gnu.org/gnu/gawk/gawk-5.0.1.tar.xz'
+Patch=""
+Description="The Gawk package contains programs for manipulating text files."
+
+Prep="%setup -q -n %{name}-%{version}
+sed -i 's/extras//' Makefile.in"
+
+Build='./configure --prefix=/usr
+%{make_build}'
+
+Install="%{make_install}
+install -vdm 755 %{buildroot}/usr/share/doc/%{name}-%{version}
+cp -v doc/{awkforai.txt,*.{eps,pdf,jpg}} %{buildroot}/usr/share/doc/%{name}-%{version}"
+
+Files='%defattr(-,root,root)'
+Post=''

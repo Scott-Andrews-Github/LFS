@@ -1,0 +1,23 @@
+Summary='The Flex package contains a utility for generating programs that recognize patterns in text.'
+Name='flex'
+Version='2.6.4'
+Release='1'
+License='BSD'
+Url='https://github.com/westes/flex'
+Group='LFS/Base'
+Source='https://github.com/westes/flex/releases/download/v2.6.4/flex-2.6.4.tar.gz'
+Patch=""
+Description='The Flex package contains a utility for generating programs that recognize patterns in text.'
+
+Prep="%setup -q -n %{name}-%{version}
+sed -i '/math.h/a #include <malloc.h>' src/flexdef.h"
+
+Build='HELP2MAN=/tools/bin/true \
+./configure --prefix=/usr --docdir=/usr/share/doc/%{name}-%{version}
+%{make_build}'
+
+Install='%{make_install}
+ln -sv flex %{buildroot}/usr/bin/lex'
+
+Files='%defattr(-,root,root)'
+Post=''

@@ -1,0 +1,22 @@
+Summary='The LFS-Bootscripts package contains a set of scripts to start/stop the LFS system at bootup/shutdown.'
+Name='lfs-bootscripts'
+Version='20190524'
+Release='1'
+License='None'
+Url='http://www.linuxfromscratch.org'
+Group='LFS/Base'
+Source='http://www.linuxfromscratch.org/lfs/downloads/9.0/lfs-bootscripts-20190524.tar.xz'
+Patch=""
+Description='The LFS-Bootscripts package contains a set of scripts to start/stop the LFS system
+at bootup/shutdown. The configuration files and procedures needed to customize the
+boot process are described in the following sections.'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='
+%{make_build}'
+
+Install="%{make_install}"
+
+Files='%defattr(-,root,root)'
+Post=''

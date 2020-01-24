@@ -1,0 +1,28 @@
+Summary='The Libcap package implements the user-space interfaces to the POSIX 1003.1e'
+Name='libcap'
+Version='2.27'
+Release='1'
+License='GPLv2'
+Url='https://sites.google.com/site/fullycapable'
+Group='LFS/Base'
+Source='https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-2.27.tar.xz'
+Patch=""
+Description='The Libcap package implements the user-space interfaces to the POSIX 1003.1e
+capabilities available in Linux kernels. These capabilities are a partitioning
+of the all powerful root privilege into a set of distinct privileges.'
+
+Prep="%setup -q -n %{name}-%{version}
+sed -i '/install.*STALIBNAME/d' libcap/Makefile"
+
+Build='%{make_build}'
+
+Install='
+%{make_install} RAISE_SETFCAP=no lib=lib prefix=/usr
+#make DESTDIR=%{buildroot} RAISE_SETFCAP=no lib=lib prefix=/usr install
+chmod -v 755 %{buildroot}/usr/lib/libcap.so.%{version}
+install -vdm 755 %{buildroot}/lib
+mv -v %{buildroot}/usr/lib/libcap.so.* %{buildroot}/lib
+ln -sfv ../../lib/$(readlink %{buildroot}/usr/lib/libcap.so) %{buildroot}/usr/lib/libcap.so'
+
+Files='%defattr(-,root,root)'
+Post=''

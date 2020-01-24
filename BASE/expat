@@ -1,0 +1,25 @@
+Summary='The Expat package contains a stream oriented C library for parsing XML.'
+Name='expat'
+Version='2.2.7'
+Release='1'
+License='Other'
+Url='https://libexpat.github.io'
+Group='LFS/Base'
+Source='https://prdownloads.sourceforge.net/expat/expat-2.2.7.tar.xz'
+Patch=""
+Description='The Expat package contains a stream oriented C library for parsing XML.'
+
+Prep="%setup -q -n %{name}-%{version}
+sed -i 's|usr/bin/env |bin/|' run.sh.in"
+
+Build='./configure --prefix=/usr \
+	--disable-static \
+	--docdir=/usr/share/doc/%{name}-%{version}
+%{make_build}'
+
+Install='%{make_install}
+install -v -dm755 %{buildroot}/usr/share/doc/%{name}-%{version}
+install -v -m644 doc/*.{html,png,css} %{buildroot}/usr/share/doc/%{name}-%{version}'
+
+Files='%defattr(-,root,root)'
+Post=''

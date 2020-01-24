@@ -1,0 +1,24 @@
+Summary='The Expect package contains a program for carrying out scripted dialogues'
+Name='tools-expect'
+Version='5.45.4'
+Release='1'
+License='Any'
+Url='https://core.tcl.tk/expect'
+Group='LFS/Tools'
+Source='https://prdownloads.sourceforge.net/expect/expect5.45.4.tar.gz'
+Patch=""
+Description='The Expect package contains a program for carrying out scripted dialogues with other interactive programs.'
+
+Prep="%setup -q -n expect%{version}
+cp -v configure{,.orig}
+sed 's:/usr/local/bin:/bin:' configure.orig > configure"
+
+Build='./configure --prefix=/tools \
+	--with-tcl=/tools/lib \
+	--with-tclinclude=/tools/include
+%{make_build}'
+ 
+Install='make SCRIPTS="" DESTDIR=%{buildroot} install
+rm -rf %{buildroot}/tools/share/{doc,info,man}'
+
+Files='%defattr(-,lfs,lfs)'

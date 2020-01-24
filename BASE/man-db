@@ -1,0 +1,29 @@
+Summary='The Man-DB package contains programs for finding and viewing man pages.'
+Name='man-db'
+Version='2.8.6.1'
+Release='1'
+License='Other'
+Url='https://www.nongnu.org/man-db'
+Group='LFS/Base'
+Source='http://download.savannah.gnu.org/releases/man-db/man-db-2.8.6.1.tar.xz'
+Patch=""
+Description='The Man-DB package contains programs for finding and viewing man pages.'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='./configure --prefix=/usr \
+	--docdir=/usr/share/doc/%{name}-%{version} \
+	--sysconfdir=/etc \
+	--disable-setuid \
+	--enable-cache-owner=bin \
+	--with-browser=/usr/bin/lynx \
+	--with-vgrind=/usr/bin/vgrind \
+	--with-grap=/usr/bin/grap \
+	--with-systemdtmpfilesdir= \
+	--with-systemdsystemunitdir= 
+%{make_build}'
+
+Install="%{make_install}"
+
+Files='%defattr(-,root,root)'
+Post=''

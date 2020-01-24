@@ -1,0 +1,50 @@
+Summary='Package manager'
+Name='rpm'
+Version='4.14.2.1'
+Release='1'
+License='GPLv2'
+Url='http://rpm.org'
+Group='LFS/Base'
+Source='http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.2.1.tar.bz2 http://download.oracle.com/berkeley-db/db-6.0.20.tar.gz'
+Patch=""
+Description='Package manager'
+
+Prep="%setup -q -n %{name}-%{version}
+%setup -q -T -D -a 1 -n %{name}-%{version}
+sed -i 's/--srcdir=\$db_dist/--srcdir=\$db_dist --with-pic/' db3/configure
+ln -vs db-6.0.20 db"
+
+Build='./configure --prefix=/usr \
+	--program-prefix= \
+	--sysconfdir=/etc \
+	--with-crypto=openssl \
+	--with-cap \
+	--with-acl \
+	--without-external-db \
+	--without-archive \
+	--without-lua \
+	--without-openmp \
+	--enable-python \
+	--disable-dependency-tracking \
+	--disable-silent-rules \
+	--disable-rpath \
+	--disable-inhibit-plugin
+%{make_build}'
+Install="%{make_install}
+install -vdm 755 %{buildroot}/etc/rpm
+cat > %{buildroot}/etc/rpm/macros <<- EOF
+	#	rpm parms
+	%%_topdir /usr/src/LFS-RPi
+	%%_dbpath /var/lib/rpm
+	%%_arch %%{_host_cpu}
+	%%_tmppath /usr/src/LFS/TMP
+	%%_unique_build_ids 0
+	%%_build_id_links none
+	%%_smp_mflags -j4
+	#	Raspberry Pi 2 v1.1 platform
+	%%_optflags -O2 -march=armv7-a+fp -mtune=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4 -pipe -fPIC -fomit-frame-pointer
+	%%_system_type --with-arch=armv7-a+fp --with-fpu=neon-vfpv4 --with-float=hard --with-arch-directory=arm
+EOF"
+
+Files='%defattr(-,root,root)'
+Post=''

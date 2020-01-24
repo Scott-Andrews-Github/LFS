@@ -1,0 +1,20 @@
+Summary='The Bc package contains an arbitrary precision numeric processing language'
+Name='bc'
+Version='2.1.3'
+Release='1'
+License='GPLv3'
+Url='http://www.gnu.org'
+Group='LFS/Base'
+Source='https://github.com/gavinhoward/bc/archive/2.1.3/bc-2.1.3.tar.gz'
+Patch=""
+Description='The Bc package contains an arbitrary precision numeric processing language'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='DESTDIR=%{_buildroot} PREFIX=/usr CC=gcc CFLAGS+=" -std=c99" ./configure.sh  -G -O3
+%{make_build}'
+
+Install="make DESTDIR=%{buildroot} install"
+
+Files='%defattr(-,root,root)'
+Post=''

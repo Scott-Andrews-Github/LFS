@@ -1,0 +1,14 @@
+log=${LOGS}/${i}
+_msg_line "Setting up rpm "
+if [ -e "${log}" ]; then
+	_msg "Skipping"
+else
+	install -vdm 755 ${LFS}/tmp >> ${log}
+	install -vdm 755 ${LFS}/bin >> ${log}
+	install -vdm 755 ${LFS}/usr/bin >> ${log}
+	ln -vsf /tools/bin/bash ${LFS}/bin/sh >> ${log}
+	ln -vsf /tools/bin/bash ${LFS}/bin >> ${log}
+	ln -vsf /tools/bin/getconf ${LFS}/usr/bin >> ${log}
+	_msg_success
+fi
+touch "${log}"

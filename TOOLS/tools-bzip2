@@ -1,0 +1,30 @@
+Summary='The Bzip2 package contains programs for compressing and decompressing files'
+Name='tools-bzip2'
+Version='1.0.8'
+Release='1'
+License='Other'
+Url='Any'
+Group='LFS/Tools'
+Source='https://www.sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz'
+Patch=""
+Description='The Bzip2 package contains programs for compressing and decompressing files
+Compressing text files with bzip2 yields a much better compression percentage
+than with the traditional gzip.'
+
+Prep='%setup -q -n bzip2-%{version}
+sed -i "s|-O2|${CFLAGS}|g" Makefile
+sed -i "s|-O2|${CFLAGS}|g" Makefile-libbz2_so
+'
+Prep+="sed -i 's@\(ln -s -f \)\$(PREFIX)/bin/@\1@' Makefile
+sed -i 's@(PREFIX)/man@(PREFIX)/share/man@g' Makefile"
+
+Build='make -f Makefile-libbz2_so
+make clean
+%{make_build}'
+
+Install='make PREFIX=%{buildroot}/tools install
+install -vDm 644 libbz2.so* %{buildroot}/tools/lib
+ln -sv libbz2.so.1.0 %{buildroot}/tools/lib/libbz2.so
+rm -rf %{buildroot}/tools/share/{doc,info,man}'
+
+Files='%defattr(-,lfs,lfs)'

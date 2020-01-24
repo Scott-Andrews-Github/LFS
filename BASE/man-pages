@@ -1,0 +1,19 @@
+Summary='Man pages'
+Name='man-pages'
+Version='5.02'
+Release='1'
+License='GPLv2'
+Url='http://www.kernel.org/doc/man-pages'
+Group='LFS/Base'
+Source='https://www.kernel.org/pub/linux/docs/man-pages/man-pages-5.02.tar.xz'
+Patch=""
+Description='The Man-pages package contains over 1,900 man pages'
+
+Prep='%setup -q'
+
+Build=''
+
+Install='%{make_install}'
+
+Files='%defattr(-,root,root)
+%defattr(-,root,root)'

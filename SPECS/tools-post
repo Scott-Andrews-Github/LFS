@@ -1,0 +1,24 @@
+log=${LOGS}/${i}
+_msg_line "Post processing: "
+if [ -e "${log}" ]; then
+	_msg "Skipping"
+else
+	rm -vrf BUILDROOT >> ${log}
+	install -vdm 755 BUILDROOT >> ${log}
+	#	/tools/lib/libcrypto.so.1.1
+	install -vDm 755 /tools/lib/libcrypto.so.1.1 BUILDROOT/ >> ${log}
+	#	libcrypto.so - symlink
+	ln -vsf libcrypto.so.1.1 BUILDROOT/libcrypto.so >> ${log}
+	#	libelf.so.1
+	install -vDm 755 /tools/lib/libelf-0.177.so BUILDROOT/ >> ${log}
+	ln -vsf libelf-0.177.so BUILDROOT/libelf.so >> ${log}
+	ln -vsf libelf-0.177.so BUILDROOT/libelf.so.1 >> ${log}
+	#	remove the following rpms
+	/usr/bin/rpm -e --verbose --nodeps --dbpath ${RPMDB} tools-zlib >> ${log}
+	/usr/bin/rpm -e --verbose --nodeps --dbpath ${RPMDB} tools-popt >> ${log}
+	/usr/bin/rpm -e --verbose --nodeps --dbpath ${RPMDB} tools-openssl >> ${log}
+	/usr/bin/rpm -e --verbose --nodeps --dbpath ${RPMDB} tools-libelf >> ${log}
+	cp -va BUILDROOT/* /tools/lib >> ${log}
+	_msg_success
+fi
+touch "${log}"

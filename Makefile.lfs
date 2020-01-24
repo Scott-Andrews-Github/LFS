@@ -1,0 +1,126 @@
+#	LFS settings
+LFS = /mnt/lfs
+PARENT = /usr/src/LFS
+#	ARM settings, RPI2
+MARCH=armv7-a+neon-vfpv4
+MTUNE=cortex-a7
+MFLOAT=hard
+MFPU=neon-vfpv4
+all:
+setup:
+#	Chapter 3
+	@install -vdm 755 INFO
+	@install -vdm 755 LOGS
+	@install -vdm 755 PROVIDES
+	@install -vdm 755 REQUIRES
+	@install -vdm 755 RPMDB
+	@install -vdm 755 TMP
+	@install -vdm 755 SOURCES
+	@wget --input-file=DOCS/wget-list --no-clobber --continue --directory-prefix=SOURCES
+	@wget --no-clobber --continue --directory-prefix=SOURCES ftp://anduin.linuxfromscratch.org/BLFS/popt/popt-1.16.tar.gz
+	@wget --no-clobber --continue --directory-prefix=SOURCES http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.2.1.tar.bz2
+	@wget --no-clobber --continue --directory-prefix=SOURCES http://download.oracle.com/berkeley-db/db-6.0.20.tar.gz
+	@wget --no-clobber --continue --directory-prefix=SOURCES https://zlib.net/zlib-1.2.11.tar.xz
+	@wget --no-clobber --continue --directory-prefix=SOURCES https://ftp.gnu.org/gnu/wget/wget-1.20.3.tar.gz
+	@wget --no-clobber --continue --directory-prefix=SOURCES http://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-8.0p1.tar.gz
+	@wget --no-clobber --continue --directory-prefix=SOURCES https://github.com/raspberrypi/firmware/archive/master.tar.gz
+	@wget --no-clobber --continue --directory-prefix=SOURCES http://anduin.linuxfromscratch.org/BLFS/blfs-bootscripts/blfs-bootscripts-20190609.tar.xz
+	@wget --no-clobber --continue --directory-prefix=SOURCES http://ftp.rpm.org/releases/rpm-4.15.x/rpm-4.15.1.tar.bz2
+	@cd SOURCES;md5sum -c ../DOCS/md5sums
+spec:
+	$(MAKE) -C TOOLS
+	$(MAKE) -C BASE
+tools-spec:
+	$(MAKE) -C TOOLS
+base-spec: $(BASESPEC)
+	$(MAKE) -C BASE
+#	Toolchain build
+setup-tools:
+#	Chapter 4
+#	4.2. Creating the $LFS/tools Directory
+	@[ -e $(LFS)/tools ] || install -dm 755 $(LFS)/tools
+	@[ -h /tools ] || ln -s $(LFS)/tools /
+#	4.3. Adding the LFS User
+	@getent group  lfs > /dev/null 2>&1 || groupadd lfs > /dev/null 2>&1
+	@getent passwd lfs > /dev/null 2>&1 || useradd  -c 'LFS user' -g lfs -m -k /dev/null -s /bin/bash lfs -d $(LFS)$(PARENT) > /dev/null 2>&1
+	@getent passwd lfs > /dev/null 2>&1 && passwd --delete lfs > /dev/null 2>&1
+#	4.4. Setting Up the Environment
+	@echo -n 'exec env -i HOME=$$HOME TERM=$$TERM PS1="\u:\w\$$ "' /bin/bash > bash_profile
+	@echo 'set +h' > .bashrc
+	@echo 'umask 022' >> .bashrc
+	@echo 'LFS=$(LFS)' >> .bashrc
+	@echo 'LC_ALL=POSIX' >> .bashrc
+	@echo 'PATH=/tools/bin:/bin:/usr/bin' >> .bashrc
+	@echo 'export LFS LC_ALL PATH' >> .bashrc
+	@echo 'HOST=`cat /etc/hostname`' >> .bashrc
+	@echo 'NORMAL="\[\e[0m\]"' >> .bashrc
+	@echo 'RED="\[\e[1;31m\]"' >> .bashrc
+	@echo 'GREEN="\[\e[1;32m\]"' >> .bashrc
+	@echo 'CYAN="\[\e[1;36m\]"' >> .bashrc
+	@echo 'if [[ $$EUID == 0 ]] ; then ' >> .bashrc
+	@echo '	PS1="$$RED\u$$NORMAL@$$HOST$$RED [ $$NORMAL\w$$RED ]# $$NORMAL"' >> .bashrc
+	@echo 'else' >> .bashrc
+	@echo 'PS1="\u$$GREEN@$$CYAN$$HOST$$GREEN [ $$NORMAL\w$$GREEN ]\$$ $$NORMAL"' >> .bashrc
+	@echo 'fi' >> .bashrc
+	@echo '%LFS $(LFS)'  > .rpmmacros
+	@echo '%LFS_TGT %{_arch}-lfs-linux-gnueabihf' >> .rpmmacros
+	@echo '%PARENT $(PARENT)' >> .rpmmacros
+	@echo '#filesystem macros' >> .rpmmacros
+	@echo '%_prefix /tools' >> .rpmmacros
+	@echo '#rpm parms' >> .rpmmacros
+	@echo '%_arch armv7l' >> .rpmmacros
+	@echo '%_topdir %{LFS}%{PARENT}' >> .rpmmacros
+	@echo '%_dbpath %{_topdir}/RPMDB' >> .rpmmacros
+	@echo '%_tmppath %{_topdir}/TMP' >> .rpmmacros
+	@echo '%_unique_build_ids 0' >> .rpmmacros
+	@echo '%_build_id_links none' >> .rpmmacros
+	@echo '%_smp_mflags  -j4 '>> .rpmmacros
+	@echo '#Raspberry Pi 2 v1.1 platform' >> .rpmmacros
+	@echo '%_optflags -O2 -march=$(MARCH) -mtune=$(MTUNE) -mfloat-abi=$(MFLOAT) -mfpu=$(MFPU) -pipe -fPIC -fomit-frame-pointer'  >> .rpmmacros
+	@echo '%_system_type --with-arch=$(MARCH) --with-fpu=$(MFPU) --with-float=$(MFLOAT) --with-arch-directory=arm' >> .rpmmacros
+	@chown -R lfs:lfs $(LFS)
+toolchain:
+	./builder.sh tools.text
+#	Base system build
+setup-base:
+	@install -vdm 755 $(LFS)/root
+	@echo -n 'exec env -i HOME=$$HOME TERM=$$TERM PS1="\u:\w\$$ "' /tools/bin/bash > $(LFS)/root/bash_profile
+	@echo 'set +h' > $(LFS)/root/.bashrc
+	@echo 'umask 022' >> $(LFS)/root/.bashrc
+	@echo 'LC_ALL=POSIX' >> $(LFS)/root/.bashrc
+	@echo ' PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin' >> $(LFS)/root/.bashrc
+	@echo 'export LC_ALL PATH' >> $(LFS)/root/.bashrc
+	@echo 'HOST=raspberrypi' >> $(LFS)/root/.bashrc
+	@echo 'NORMAL="\[\e[0m\]"' >> $(LFS)/root/.bashrc
+	@echo 'RED="\[\e[1;31m\]"' >> $(LFS)/root/.bashrc
+	@echo 'GREEN="\[\e[1;32m\]"' >> $(LFS)/root/.bashrc
+	@echo 'CYAN="\[\e[1;36m\]"' >> $(LFS)/root/.bashrc
+	@echo 'if [[ $$EUID == 0 ]] ; then ' >> $(LFS)/root/.bashrc
+	@echo '	PS1="$$RED\u$$NORMAL@$$HOST$$RED [ $$NORMAL\w$$RED ]# $$NORMAL"' >> $(LFS)/root/.bashrc
+	@echo 'else' >>  $(LFS)/root/.bashrc
+	@echo 'PS1="\u$$GREEN@$$CYAN$$HOST$$GREEN [ $$NORMAL\w$$GREEN ]\$$ $$NORMAL"' >> $(LFS)/root/.bashrc
+	@echo 'fi' >> $(LFS)/root/.bashrc
+	@echo '%PARENT $(PARENT)' > $(LFS)/root/.rpmmacros
+	@echo '#filesystem macros' >> $(LFS)/root/.rpmmacros
+	@echo '%_prefix /usr' >> $(LFS)/root/.rpmmacros
+	@echo '#rpm parms' >> $(LFS)/root/.rpmmacros
+	@echo '%_arch armv7hnl' >> $(LFS)/root/.rpmmacros
+	@echo '%_topdir %{PARENT}' >> $(LFS)/root/.rpmmacros
+	@echo '%_tmppath %{_topdir}/TMP' >> $(LFS)/root/.rpmmacros
+	@echo '%_unique_build_ids 0' >> $(LFS)/root/.rpmmacros
+	@echo '%_build_id_links none' >> $(LFS)/root/.rpmmacros
+	@echo '%_smp_mflags -j4' >> $(LFS)/root/.rpmmacros
+	@echo '#Raspberry Pi 2 v1.1 platform' >> $(LFS)/root/.rpmmacros
+	@echo '%_optflags -O2 -march=$(MARCH) -mtune=$(MTUNE) -mfloat-abi=$(MFLOAT) -mfpu=$(MFPU) -pipe -fPIC -fomit-frame-pointer' >> $(LFS)/root/.rpmmacros
+	@echo '%_system_type --with-arch=$(MARCH) --with-fpu=$(MFPU) --with-float=$(MFLOAT) --with-arch-directory=arm' >> $(LFS)/root/.rpmmacros
+	@install -vdm 755 $(LFS)/bin
+	@install -vdm 755 $(LFS)/usr/bin
+	@install -vdm 755 $(LFS)/usr/lib
+	@ln -sf /tools/bin/{bash,cat,chmod,dd,echo,id,ln,mkdir,pwd,rm,stty,touch} $(LFS)/bin
+	@ln -sf /tools/bin/{env,install,perl,printf} $(LFS)/usr/bin
+	@ln -sf /tools/lib/libgcc_s.so{,.1} $(LFS)/usr/lib
+	@ln -sf /tools/lib/libstdc++.{a,so{,.6}} $(LFS)/usr/lib
+	@ln -sf bash $(LFS)/bin/sh
+	@chown -R root:root $(LFS)
+base:
+	./builder.sh base.text

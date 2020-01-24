@@ -1,0 +1,23 @@
+Summary='The Python 3 package contains the Python development environment.'
+Name='tools-python'
+Version='3.7.4'
+Release='1'
+License='Any'
+Url='Any'
+Group='LFS/Tools'
+Source='https://www.python.org/ftp/python/3.7.4/Python-3.7.4.tar.xz'
+Patch=""
+Description='The Python 3 package contains the Python development environment.
+This is useful for object-oriented programming, writing scripts,
+prototyping large programs or developing entire applications.'
+
+Prep="%setup -q -n Python-%{version}
+sed -i '/def add_multiarch_paths/a \        return' setup.py"
+
+Build='./configure --prefix=/tools --without-ensurepip
+%{make_build}
+rm -rf %{buildroot}/tools/share/{doc,info,man}'
+
+Install='%{make_install}'
+
+Files='%defattr(-,lfs,lfs)'

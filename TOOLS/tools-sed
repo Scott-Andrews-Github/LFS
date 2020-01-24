@@ -1,0 +1,20 @@
+Summary='The Sed package contains a stream editor'
+Name='tools-sed'
+Version='4.7'
+Release='1'
+License='GPLv3'
+Url='Any'
+Group='LFS/Tools'
+Source='http://ftp.gnu.org/gnu/sed/sed-4.7.tar.xz'
+Patch=""
+Description='The Sed package contains a stream editor'
+
+Prep='%setup -q -n sed-%{version}'
+
+Build='./configure --prefix=/tools
+%{make_build}'
+
+Install='%{make_install}
+rm -rf %{buildroot}/tools/share/{doc,info,man}'
+
+Files='%defattr(-,lfs,lfs)'

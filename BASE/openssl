@@ -1,0 +1,32 @@
+Summary='The OpenSSL package contains management tools and libraries relating to cryptography	'
+Name='openssl'
+Version='1.1.1c'
+Release='1'
+License='GPL'
+Url='https://openssl.org'
+Group='LFS/Base'
+Source='https://www.openssl.org/source/openssl-1.1.1c.tar.gz'
+Patch=""
+Description='The OpenSSL package contains management tools and libraries relating to cryptography.
+These are useful for providing cryptographic functions to other packages, such as OpenSSH,
+email applications and web browsers (for accessing HTTPS sites).'
+
+Prep="%setup -q -n %{name}-%{version}
+sed -i '/\} data/s/ =.*$/;\n    memset(\&data, 0, sizeof(data));/' crypto/rand/rand_lib.c"
+
+Build='./config --prefix=/usr \
+	--openssldir=/etc/ssl \
+	--libdir=lib \
+	shared \
+	zlib-dynamic \
+	enable-md2
+%{make_build}'
+
+Install="sed -i '/INSTALL_LIBS/s/libcrypto.a libssl.a//' Makefile
+%{make_install}
+mv -v %{buildroot}/usr/share/doc/openssl{,-%{version}}
+cp -vfr doc/* %{buildroot}/usr/share/doc/%{name}-%{version}
+rm -f %{buildroot}/usr/share/man/man1/passwd.1"
+
+Files='%defattr(-,root,root)'
+Post=''

@@ -1,0 +1,23 @@
+Summary='The Psmisc package contains programs for displaying information about running processes.'
+Name='psmisc'
+Version='23.2'
+Release='1'
+License='GPLv2'
+Url='http://psmisc.sourceforge.net'
+Group='LFS/Base'
+Source='https://sourceforge.net/projects/psmisc/files/psmisc/psmisc-23.2.tar.xz'
+Patch=""
+Description='The Psmisc package contains programs for displaying information about running processes.'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='./configure --prefix=/usr
+%{make_build}'
+
+Install='%{make_install}
+install -vdm 755 %{buildroot}/bin
+mv -v %{buildroot}/usr/bin//fuser %{buildroot}/bin
+mv -v %{buildroot}/usr/bin//killall %{buildroot}/bin'
+
+Files='%defattr(-,root,root)'
+Post=''

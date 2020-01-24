@@ -1,0 +1,21 @@
+Summary='The Gettext package contains utilities for internationalization and localization.'
+Name='tools-gettext'
+Version='0.20.1'
+Release='1'
+License='GPLv3'
+Url='http://www.gnu.org/software/gettext'
+Group='LFS/Tools'
+Source='http://ftp.gnu.org/gnu/gettext/gettext-0.20.1.tar.xz'
+Patch=""
+Description='The Gettext package contains utilities for internationalization and localization.'
+
+Prep='%setup -q -n gettext-%{version}'
+
+Build='./configure --disable-shared
+%{make_build}'
+
+Install='install -vdm 755 %{buildroot}/tools/bin
+cp -v gettext-tools/src/{msgfmt,msgmerge,xgettext} %{buildroot}/tools/bin
+rm -rf %{buildroot}/tools/share/{doc,info,man}'
+
+Files='%defattr(-,lfs,lfs)'

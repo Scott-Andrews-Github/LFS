@@ -1,0 +1,39 @@
+Summary='linux kernel from raspberrypi.org'
+Name='raspberry-pi-kernel'
+Version='4.19.y'
+Release='1'
+License='GPLv2'
+Url='None'
+Group='LFS/Base'
+Source='https://github.com/raspberrypi/linux/archive/rpi-4.19.y.tar.gz'
+Patch=""
+Description='linux kernel from raspberrypi.org'
+
+Prep="%setup -q -n linux-rpi-%{version}
+#Issue the following sed command if you want the kernel to appear exactly as the official one
+#(with a 4.19.X+ version string):
+#sed -i 's/EXTRAVERSION =.*/EXTRAVERSION = +/' Makefile"
+
+Build='make mrproper
+#	Raspberry Pi 1
+#KERNEL=kernel7
+#make bcmrpi_defconfig
+#	Raspberry Pi 2, Pi 3, Pi 3+
+#KERNEL=kernel7
+make bcm2709_defconfig
+#	Raspberry Pi 4
+#KERNEL=kernel7l
+#make bcm2711_defconfig
+#make -j4 V=1 zImage modules dtbs
+%{make_build} zImage modules dtbs'
+
+Install="KERNEL=kernel7
+make DESTDIR=%{buildroot} INSTALL_MOD_PATH=%{buildroot} modules_install
+install -vdm 755 %{buildroot}/boot/overlays
+cp arch/arm/boot/dts/*.dtb %{buildroot}/boot/
+cp arch/arm/boot/dts/overlays/*.dtb* %{buildroot}/boot/overlays/
+cp arch/arm/boot/dts/overlays/README %{buildroot}/boot/overlays/
+cp arch/arm/boot/zImage %{buildroot}/boot/\$KERNEL.img"
+
+Files='%defattr(-,root,root)'
+Post=''

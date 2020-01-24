@@ -1,0 +1,25 @@
+Summary='The Kbd package contains key-table files, console fonts, and keyboard utilities.'
+Name='kbd'
+Version='2.2.0'
+Release='1'
+License='Other'
+Url='http://ftp.altlinux.org/pub/people/legion/kbd'
+Group='LFS/Base'
+Source='https://www.kernel.org/pub/linux/utils/kbd/kbd-2.2.0.tar.xz'
+Patch='http://www.linuxfromscratch.org/patches/lfs/9.0/kbd-2.2.0-backspace-1.patch'
+Description='The Kbd package contains key-table files, console fonts, and keyboard utilities.'
+
+Prep="%setup -q -n %{name}-%{version}
+%patch0 -p1
+sed -i 's/\(RESIZECONS_PROGS=\)yes/\1no/g' configure
+sed -i 's/resizecons.8 //' docs/man/man8/Makefile.in"
+
+Build='PKG_CONFIG_PATH=/tools/lib/pkgconfig ./configure --prefix=/usr --disable-vlock
+%{make_build}'
+
+Install="%{make_install}
+install -vdm 755 %{buildroot}/usr/share/doc/%{name}-%{version}
+cp -R -v docs/doc/* %{buildroot}/usr/share/doc/%{name}-%{version}"
+
+Files='%defattr(-,root,root)'
+Post=''

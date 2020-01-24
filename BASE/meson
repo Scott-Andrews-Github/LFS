@@ -1,0 +1,20 @@
+Summary='Meson is an open source build system'
+Name='meson'
+Version='0.51.1'
+Release='1'
+License='Any'
+Url='https://mesonbuild.com'
+Group='LFS/Base'
+Source='https://github.com/mesonbuild/meson/releases/download/0.51.1/meson-0.51.1.tar.gz'
+Patch=""
+Description='Meson is an open source build system meant to be both extremely fast, and, even more importantly, as user friendly as possible'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='python3 setup.py build'
+
+Install='python3 setup.py install --root=dest
+cp -rv dest/* %{buildroot}'
+
+Files='%defattr(-,root,root)'
+Post=''

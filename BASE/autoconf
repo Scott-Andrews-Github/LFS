@@ -1,0 +1,22 @@
+Summary='The Autoconf package contains programs for producing shell scripts that can automatically configure source code.'
+Name='autoconf'
+Version='2.69'
+Release='1'
+License='GPLv2'
+Url='http://www.gnu.org/software/autoconf'
+Group='LFS/Base'
+Source='http://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.xz'
+Patch=""
+Description='The Autoconf package contains programs for producing shell scripts that can automatically configure source code.'
+
+Prep="%setup -q -n %{name}-%{version}
+sed '361 s/{/\\{/' -i bin/autoscan.in"
+
+Build='./configure --prefix=/usr
+%{make_build}'
+
+Install='%{make_install}
+install -D -m644 COPYING %{buildroot}/usr/share/licenses/%{name}/LICENSE'
+
+Files='%defattr(-,root,root)'
+Post=''

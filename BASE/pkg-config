@@ -1,0 +1,27 @@
+Summary='pkg-config package contains a tool for passing the include and library paths'
+Name='pkg-config'
+Version='0.29.2'
+Release='1'
+License='GPLv2'
+Url='https://www.freedesktop.org/wiki/Software/pkg-config'
+Group='LFS/Base'
+Source='https://pkg-config.freedesktop.org/releases/pkg-config-0.29.2.tar.gz'
+Patch=""
+Description='The pkg-config package contains a tool for passing the include path and/or
+library paths to build tools during the configure and make file execution.'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='./configure  \
+	--prefix=/usr \
+	--with-internal-glib \
+	--disable-host-tool \
+	--docdir=/usr/share/doc/%{name}-%{version}
+%{make_build}'
+
+Install='%{make_install}'
+
+Files='%defattr(-,root,root)
+'
+Post='
+'

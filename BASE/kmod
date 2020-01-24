@@ -1,0 +1,31 @@
+Summary='The Kmod package contains libraries and utilities for loading kernel modules'
+Name='kmod'
+Version='26'
+Release='1'
+License='GPLv2.1'
+Url='Any'
+Group='LFS/Base'
+Source='https://www.kernel.org/pub/linux/utils/kernel/kmod/kmod-26.tar.xz'
+Patch=""
+Description='The Kmod package contains libraries and utilities for loading kernel modules'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='./configure --prefix=/usr \
+	--bindir=/bin \
+	--sysconfdir=/etc \
+	--with-rootlibdir=/lib \
+	--with-xz \
+	--with-zlib
+%{make_build}'
+
+Install='%{make_install}
+install -vdm 755 %{buildroot}/bin
+install -vdm 755 %{buildroot}/sbin
+for target in depmod insmod lsmod modinfo modprobe rmmod; do
+	ln -sfv ../bin/kmod %{buildroot}/sbin/$target
+done
+ln -sfv kmod %{buildroot}/bin/lsmod'
+
+Files='%defattr(-,root,root)'
+Post=''

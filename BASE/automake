@@ -1,0 +1,20 @@
+Summary='The Automake package contains programs for generating Makefiles for use with Autoconf'
+Name='automake'
+Version='1.16.1'
+Release='1'
+License='GPLv2'
+Url='http://www.gnu.org/software/automake'
+Group='LFS/Base'
+Source='http://ftp.gnu.org/gnu/automake/automake-1.16.1.tar.xz'
+Patch=""
+Description='The Automake package contains programs for generating Makefiles for use with Autoconf'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='./configure --prefix=/usr --docdir=/usr/share/doc/%{name}-%{version}
+%{make_build}'
+
+Install='%{make_install}'
+
+Files='%defattr(-,root,root)'
+Post=''

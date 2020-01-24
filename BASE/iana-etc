@@ -1,0 +1,19 @@
+Summary='The Iana-Etc package provides data for network services and protocols.'
+Name='iana-etc'
+Version='2.30'
+Release='1'
+License='OSLv3.0'
+Url='http://freecode.com/projects/iana-etc'
+Group='LFS/Base'
+Source='http://anduin.linuxfromscratch.org/LFS/iana-etc-2.30.tar.bz2'
+Patch=""
+Description='The Iana-Etc package provides data for network services and protocols.'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='%{make_build}'
+
+Install='%{make_install}'
+
+Files='%defattr(-,root,root)'
+Post=''

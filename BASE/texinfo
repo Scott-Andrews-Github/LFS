@@ -1,0 +1,26 @@
+Summary='The Texinfo package contains programs for reading, writing, and converting info pages.'
+Name='texinfo'
+Version='6.6'
+Release='1'
+License='GPLv3'
+Url='http://www.gnu.org/software/texinfo'
+Group='LFS/Base'
+Source='http://ftp.gnu.org/gnu/texinfo/texinfo-6.6.tar.xz'
+Patch=""
+Description='The Texinfo package contains programs for reading, writing, and converting info pages.'
+
+Prep="%setup -q -n %{name}-%{version}"
+
+Build='./configure --prefix=/usr --disable-static
+%{make_build}'
+
+Install="%{make_install}
+make TEXMF=/usr/share/texmf install-tex
+"
+
+Files='%defattr(-,root,root)'
+
+Post='pushd /usr/share/info
+rm -v dir
+for f in *;	do install-info $f dir 2>/dev/null; done
+popd'

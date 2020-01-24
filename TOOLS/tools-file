@@ -1,0 +1,20 @@
+Summary='The File package contains a utility for determining the type of a given file or files'
+Name='tools-file'
+Version='5.37'
+Release='1'
+License='Other'
+Url='https://www.darwinsys.com/file'
+Group='LFS/Tools'
+Source='ftp://ftp.astron.com/pub/file/file-5.37.tar.gz'
+Patch=""
+Description='The File package contains a utility for determining the type of a given file or files.'
+
+Prep='%setup -q -n file-%{version}'
+
+Build='./configure --prefix=/tools
+%{make_build}'
+
+Install='%{make_install}
+rm -rf %{buildroot}/tools/share/{doc,info,man}'
+
+Files='%defattr(-,lfs,lfs)'

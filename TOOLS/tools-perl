@@ -1,0 +1,23 @@
+Summary='The Perl package contains the Practical Extraction and Report Language.'
+Name='tools-perl'
+Version='5.30.0'
+Release='1'
+License='GPLv1'
+Url='https://www.perl.org/'
+Group='LFS/Tools'
+Source='https://www.cpan.org/src/5.0/perl-5.30.0.tar.xz'
+Patch=""
+Description='The Perl package contains the Practical Extraction and Report Language.'
+
+Prep='%setup -q -n perl-%{version}'
+
+Build='sh Configure -des -Dprefix=/tools -Dlibs=-lm -Uloclibpth -Ulocincpthb -Doptimize="${CFLAGS}" 
+%{make_build}'
+
+Install='install -vdm 755 %{buildroot}/tools/bin
+cp -v perl cpan/podlators/scripts/pod2man %{buildroot}/tools/bin
+mkdir -pv %{buildroot}/tools/lib/perl5/5.30.0
+cp -Rv lib/* %{buildroot}/tools/lib/perl5/5.30.0
+rm -rf %{buildroot}/tools/share/{doc,info,man}'
+
+Files='%defattr(-,lfs,lfs)'

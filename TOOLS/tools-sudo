@@ -1,0 +1,33 @@
+Summary='The Sudo package allows a system administrator to give certain users'
+Name='tools-sudo'
+Version='1.8.27'
+Release='1'
+License='None'
+Url='None'
+Group='LFS/Tools'
+Source='http://www.sudo.ws/dist/sudo-1.8.27.tar.gz'
+Patch=""
+Description='The Sudo package allows a system administrator to give certain users'
+
+Prep="%setup -q -n sudo-%{version}"
+
+Build='./configure --prefix=/tools \
+            --sysconfdir=/tools/etc \
+            --sbindir=/tools/bin \
+            --enable-tmpfiles.d=/tools/var/sudo \
+            --with-secure-path \
+            --with-all-insults \
+            --with-env-editor \
+            --with-passprompt="[sudo] password for %p: " \
+            --disable-shared \
+            --enable-static
+%{make_build}'
+
+Install="%{make_install} install_uid=`id -u` install_gid=`id -g` sudoers_uid=`id -u`
+chmod 666 %{buildroot}/tools/etc/sudoers
+echo 'lfs ALL=(ALL) NOPASSWD: ALL' >> %{buildroot}/tools/etc/sudoers
+chmod 440 %{buildroot}/tools/etc/sudoers
+rm -rf %{buildroot}/tools/share/{doc,info,man}"
+
+Files='%defattr(-,root,root)'
+Post=''

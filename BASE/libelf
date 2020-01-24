@@ -1,0 +1,23 @@
+Summary='The elfutils package contains a set of utilities and libraries for handling ELF files'
+Name='libelf'
+Version='0.177'
+Release='1'
+License='GPLv3'
+Url='https://sourceware.org/ftp/elfutils'
+Group='LFS/Base'
+Source='https://sourceware.org/ftp/elfutils/0.177/elfutils-0.177.tar.bz2'
+Patch=""
+Description='The elfutils package contains a set of utilities and libraries for handling ELF
+(Executable and Linkable Format) files.'
+
+Prep="%setup -q -n elfutils-%{version}"
+
+Build='./configure --prefix=/usr
+%{make_build}'
+
+Install='%{make_install}
+make DESTDIR=%{buildroot} -C libelf install
+install -vDm644 config/libelf.pc %{buildroot}/usr/lib/pkgconfig/libelf.pc'
+
+Files='%defattr(-,root,root)'
+Post=''
