@@ -34,8 +34,8 @@ Install="%{make_install}
 install -vdm 755 %{buildroot}/etc/rpm
 cat > %{buildroot}/etc/rpm/macros <<- EOF
 	#	rpm parms
-	%%_cflags export CFLAGS='%_optflags'
-	%%_cxxflags export CXXFLAGS='%_optflags'
+	%%_cflags export CFLAGS='%%_optflags'
+	%%_cxxflags export CXXFLAGS='%%_optflags'
 	%%_topdir /usr/src/LFS
 	%%_dbpath /var/lib/rpm
 	%%_arch %%{_host_cpu}
