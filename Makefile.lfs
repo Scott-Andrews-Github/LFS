@@ -69,6 +69,8 @@ setup-tools:
 	@echo '%_prefix /tools' >> .rpmmacros
 	@echo '#rpm parms' >> .rpmmacros
 	@echo '%_arch armv7l' >> .rpmmacros
+	@echo '%_cflags export CFLAGS="%_optflags" ' >> .rpmmacros
+	@echo '%_cxxflags export CXXFLAGS="%_optflags" ' >> .rpmmacros
 	@echo '%_topdir %{LFS}%{PARENT}' >> .rpmmacros
 	@echo '%_dbpath %{_topdir}/RPMDB' >> .rpmmacros
 	@echo '%_tmppath %{_topdir}/TMP' >> .rpmmacros

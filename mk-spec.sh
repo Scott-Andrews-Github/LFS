@@ -111,9 +111,8 @@ function _prep {
 }
 function _build {
 	_msg "%build" >> ${TARGET}
-	_msg 'CFLAGS="${CFLAGS:-%_optflags}";export CFLAGS' >> ${TARGET}
-	_msg 'CXXFLAGS="${CXXFLAGS:-%_optflags}";export CXXFLAGS' >> ${TARGET}
-	_msg 'FFLAGS="${FFLAGS:-%_optflags}";export FFLAGS' >> ${TARGET}
+	_msg '%{_cflags}' >> ${TARGET}
+	_msg '%{_cxxflags}' >> ${TARGET}
 	_msg "${Build}" >> ${TARGET}
 _msg "#-----------------------------------------------------------------------------" >> ${TARGET}
 	return

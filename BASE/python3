@@ -12,7 +12,8 @@ This is useful for object-oriented programming, writing scripts,
 prototyping large programs or developing entire applications.'
 
 Prep="%setup -q -n "Python-%{version}"
-%setup -q -T -D -a 1  -n Python-%{version}"
+%setup -q -T -D -a 1  -n Python-%{version}
+sed -i '1 s|local/||' Lib/cgi.py"
 
 Build='./configure --prefix=/usr \
 	--enable-shared \
@@ -25,12 +26,11 @@ Install='%{make_install}
 chmod -v 755 %{buildroot}/usr/lib/libpython3.7m.so
 chmod -v 755 %{buildroot}/usr/lib/libpython3.so
 ln -sfv pip3.7 %{buildroot}/usr/bin/pip3
-ln -svf python3.7 %{buildroot}/usr/bin/python
 install -v -dm755 %{buildroot}/usr/share/doc/python-%{version}/html
 cp -var python-%{version}-docs-html/* %{buildroot}/usr/share/doc/python-%{version}/html
-rm %{buildroot}/usr/lib/python3.7/cgi.py
-rm "%{buildroot}/usr/lib/python3.7/site-packages/setuptools/command/launcher manifest.xml"
-rm "%{buildroot}/usr/lib/python3.7/site-packages/setuptools/script (dev).tmpl" '
+# rm %{buildroot}/usr/lib/python3.7/cgi.py
+# rm "%{buildroot}/usr/lib/python3.7/site-packages/setuptools/command/launcher manifest.xml"
+# rm "%{buildroot}/usr/lib/python3.7/site-packages/setuptools/script (dev).tmpl" '
 
 Files='%defattr(-,root,root)'
 Post=''

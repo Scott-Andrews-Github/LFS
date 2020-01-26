@@ -15,6 +15,31 @@ TODO:
 		save .config
 
 NOTES:
+
+wget --recursive --no-parent http://example.com/configs/
+	_arch	%{_target_cpu}
+	
+	%configure \
+  CFLAGS="${CFLAGS:-%optflags}" ; export CFLAGS ; \
+  CXXFLAGS="${CXXFLAGS:-%optflags}" ; export CXXFLAGS ; \
+  FFLAGS="${FFLAGS:-%optflags -I%_fmoddir}" ; export FFLAGS ; \
+  %{_configure} --build=%{_build} --host=%{_host} \\\
+	--target=%{_target_platform} \\\
+	--program-prefix=%{?_program_prefix} \\\
+	--prefix=%{_prefix} \\\
+	--exec-prefix=%{_exec_prefix} \\\
+	--bindir=%{_bindir} \\\
+	--sbindir=%{_sbindir} \\\
+	--sysconfdir=%{_sysconfdir} \\\
+	--datadir=%{_datadir} \\\
+	--includedir=%{_includedir} \\\
+	--libdir=%{_libdir} \\\
+	--libexecdir=%{_libexecdir} \\\
+	--localstatedir=%{_localstatedir} \\\
+	--sharedstatedir=%{_sharedstatedir} \\\
+	--mandir=%{_mandir} \\\
+	--infodir=%{_infodir}
+
 	CFLAGS='-O2 -march=armv7-a -mtune=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4 -pipe -fPIC -fomit-frame-pointer -ftree-vectorize'
 	CFLAGS='-O3 -march=armv7-a -mtune=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4 -pipe -fPIC -fomit-frame-pointer'
 
